@@ -10,7 +10,57 @@ struct thirdOrderExpr {
     int c; //x
     int d; //constant
 };
+thirdOrderExpr derive_formula(const int* order, const int* input) {
+    thirdOrderExpr formula{};
+    thirdOrderExpr n0 = { input[1],1,1,1,1 };
+    thirdOrderExpr n1 = { input[2],8,4,2,1 };
+    thirdOrderExpr n2 = { input[3],27,9,3,1 };
+    thirdOrderExpr n3 = { input[4],64,16,4,1 };
+    thirdOrderExpr firstStepExprs[5] = {};
+    thirdOrderExpr secondStepExprs[4] = {};
+    thirdOrderExpr thirdStepExprs[3] = {};
+    thirdOrderExpr exprs[4][5] = {};
+    //todo change this to start at index 0 and reduce required number of inputs
+    for (int x = 0; x < *order; x++)
+    {
+        for (int y = 0; y < ((*order)+1)-x; y++)//todo extend to work like line 44 onwards
+        {
+            exprs[x][y].y = input[y + 1];
+            exprs[x][y].a = pow(y + 1, 3);
+            exprs[x][y].b = pow(y + 1, 2);
+            exprs[x][y].c = y+1;
+            exprs[x][y].d = 1;
+        }
+    }
+    for (int x = 0; x < (*order) + 1; x++)
+    {
+        firstStepExprs[x].y = input[x+1];
+        firstStepExprs[x].a = pow(x+1,3);
+        firstStepExprs[x].b = pow(x+1,2);
+        firstStepExprs[x].c = x+1;
+        firstStepExprs[x].d = 1;
 
+    }
+    for (int x = 0; x < *order; x++)
+    {
+        secondStepExprs[x].y = firstStepExprs[x+1].y - firstStepExprs[x].y;
+        secondStepExprs[x].a = firstStepExprs[x+1].a - firstStepExprs[x].a;
+        secondStepExprs[x].b = firstStepExprs[x+1].b - firstStepExprs[x].b;
+        secondStepExprs[x].c = firstStepExprs[x+1].c - firstStepExprs[x].c;
+        secondStepExprs[x].d = firstStepExprs[x+1].d - firstStepExprs[x].d;
+    }
+    for (int x = 0; x < (*order)-1; x++)
+    {
+        thirdStepExprs[x].y = secondStepExprs[x + 1].y - secondStepExprs[x].y;
+        thirdStepExprs[x].a = secondStepExprs[x + 1].a - secondStepExprs[x].a;
+        thirdStepExprs[x].b = secondStepExprs[x + 1].b - secondStepExprs[x].b;
+        thirdStepExprs[x].c = secondStepExprs[x + 1].c - secondStepExprs[x].c;
+        thirdStepExprs[x].d = secondStepExprs[x + 1].d - secondStepExprs[x].d;
+    }
+    //todo add last step for quartics
+    
+    return formula;
+}
 int determine_order(int* input, int* constantDifference) {
     int first[5]{};
     int second[4]{};
@@ -36,12 +86,12 @@ int determine_order(int* input, int* constantDifference) {
 }
 int main()
 {
-    std::cout << 18 / factorial(3);
-    int input[21] = { 0, 3, 24, 81, 192, 375, 648, 1029, 1536, 2187, 3000, 3993, 5184, 6591, 8232, 10125, 12288, 14739, 17496, 20577, 24000 };
+    //int input[21] = { 0, 3, 24, 81, 192, 375, 648, 1029, 1536, 2187, 3000, 3993, 5184, 6591, 8232, 10125, 12288, 14739, 17496, 20577, 24000 };
     //int input[] = { 5,19,49,101,181,295,449 };
-    //int input[] = { 4,17,54,127,248,429 };
+    int input[] = { 4,17,54,127,248,429 };
     int constantDifference = -1;
     int order = determine_order(input, &constantDifference);
+    thirdOrderExpr idk = derive_formula(&order, input);
     if (order == -1) { std::cout << "order not detected"; }
     std::cout << order << '\n';
     switch (order) {
