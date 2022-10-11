@@ -28,7 +28,7 @@ struct result {
     int d; //x
     int e; //constant
 };
-thirdOrderExpr derive_formula(const int* order, const int* input) {
+thirdOrderExpr derive_formula(const int* order, const int* input, const int* constantDifference) {
     thirdOrderExpr formula{};
     thirdOrderExpr exprs[5][5] = {};
     //todo change this to start at index 0 to reduce required number of inputs
@@ -49,12 +49,13 @@ thirdOrderExpr derive_formula(const int* order, const int* input) {
             exprs[x][y] = exprs[x - 1][y + 1] - exprs[x - 1][y];
         }
     }
-    int a = *order>= 4 ? 1 : 0;
-    int b = *order>= 3 ? 1 : 0;
-    int c = *order>= 2 ? 1 : 0;
-    int d = *order>= 1 ? 1 : 0;
+    int firstCoeff = (*constantDifference) / factorial(*order);
+    int a = *order>= 4 ? (*order == 4 ? firstCoeff : 1) : 0;
+    int b = *order>= 3 ? (*order == 3 ? firstCoeff : 1) : 0;
+    int c = *order>= 2 ? (*order == 2 ? firstCoeff : 1) : 0;
+    int d = *order>= 1 ? (*order == 1 ? firstCoeff : 1) : 0;
     int e = 1;
-    for (int x = (*order)+1; x>0; x--)
+    for (int x = (*order); x>0; x--)
     {
         thirdOrderExpr expr = exprs[x-1][0];
         expr.a *= a;
@@ -84,12 +85,12 @@ int determine_order(int* input, int* constantDifference) {
     int second[4]{};
     int third[3]{};
     int fourth[2]{};
-    if (input[1] - input[0] == input[2] - input[1]) { return 1; }
+    if (input[1] - input[0] == input[2] - input[1]) { *constantDifference = input[1] - input[0]; return 1; }
     for (int a = 0; a < 5; a++)
     {
         first[a] = input[a + 1] - input[a];
     }
-    if (first[1] - first[0] == first[2] - first[1]) { return 2; }
+    if (first[1] - first[0] == first[2] - first[1]) { *constantDifference = first[1] - first[0]; return 2; }
     for (int b = 0; b < 4; b++)
     {
         second[b] = first[b + 1] - first[b];
@@ -99,85 +100,31 @@ int determine_order(int* input, int* constantDifference) {
     {
         third[c] = second[c + 1] - second[c];
     }
-    if (third[1] - third[0] == third[2] - third[1]) { return 4; }
+    if (third[1] - third[0] == third[2] - third[1]) { *constantDifference = third[1] - third[0]; return 4; }
     return -1;
 }
 int main()
 {
-    //int input[21] = { 0, 3, 24, 81, 192, 375, 648, 1029, 1536, 2187, 3000, 3993, 5184, 6591, 8232, 10125, 12288, 14739, 17496, 20577, 24000 };
-    //int input[] = { 5,19,49,101,181,295,449 };
-    //int input[] = { 4,17,54,127,248,429 };
-    int input[] = { 114, 110, 100, 78, 38, -26, -120, -250, -422, -642, -916, -1250, -1650, -2122, -2672, -3306, -4030, -4850, -5772, -6802, -7946 };
+    //3x^3
+    int a[] = { 0, 3, 24, 81, 192, 375, 648, 1029, 1536, 2187, 3000, 3993, 5184, 6591, 8232, 10125, 12288, 14739, 17496, 20577, 24000 };
+    
+    //5x^4 - 9
+    int b[] = { -9, -4, 71, 396, 1271, 3116, 6471, 11996, 20471, 32796, 49991, 73196, 103671, 142796, 192071, 253116, 327671, 417596, 524871, 651596, 799991 };
+
+    //9x^3 + 7x^2 - 2x
+    int c[] = { 0, 14, 96, 300, 680, 1290, 2184, 3416, 5040, 7110, 9680, 12804, 16536, 20930, 26040, 31920, 38624, 46206, 54720, 64220, 74760 };
+
+    //-x^3 + 2x^2 + 5x + 7
+    int d[] = { 7, 13, 17, 13, -5, -43, -107, -203, -337, -515, -743, -1027, -1373, -1787, -2275, -2843, -3497, -4243, -5087, -6035, -7093 };
+
+    //-x^3 -3x + 114
+    int e[] = { 114, 110, 100, 78, 38, -26, -120, -250, -422, -642, -916, -1250, -1650, -2122, -2672, -3306, -4030, -4850, -5772, -6802, -7946 };
+
+    //-6x^2 -84x + 715
+    int f[] = { 715, 625, 523, 409, 283, 145, -5, -167, -341, -527, -725, -935, -1157 };
+
     int constantDifference = -1;
-    int order = determine_order(input, &constantDifference);
-    thirdOrderExpr idk = derive_formula(&order, input);
+    int order = determine_order(f, &constantDifference);
+    thirdOrderExpr idk = derive_formula(&order, f, &constantDifference);
     if (order == -1) { std::cout << "order not detected"; }
-    std::cout << order << '\n';
-    switch (order) {
-    case 3:
-        thirdOrderExpr n0 = { input[1],1,1,1,1};
-        thirdOrderExpr n1 = { input[2],8,4,2,1};
-        thirdOrderExpr n2 = { input[3],27,9,3,1};
-        thirdOrderExpr n3 = { input[4],64,16,4,1};
-        //int a = constantDifference / factorial(3);
-        thirdOrderExpr n4 = {
-            n1.y - n0.y,
-            n1.a - n0.a,
-            n1.b - n0.b,
-            n1.c - n0.c,
-            n1.d - n0.d
-        };
-        std::cout << n4.y << ' ' << n4.a << ' ' << n4.b << ' ' << n4.c << ' ' << n4.d << '\n';
-        thirdOrderExpr n5 = {
-            n2.y - n1.y,
-            n2.a - n1.a,
-            n2.b - n1.b,
-            n2.c - n1.c,
-            n2.d - n1.d
-        };
-        std::cout << n5.y << ' ' << n5.a << ' ' << n5.b << ' ' << n5.c << ' ' << n5.d << '\n';
-        thirdOrderExpr n6 = {
-            n3.y - n2.y,
-            n3.a - n2.a,
-            n3.b - n2.b,
-            n3.c - n2.c,
-            n3.d - n2.d
-        };
-        std::cout << n6.y << ' ' << n6.a << ' ' << n6.b << ' ' << n6.c << ' ' << n6.d << '\n';
-
-
-        thirdOrderExpr n7 = {
-            n5.y - n4.y,
-            n5.a - n4.a,
-            n5.b - n4.b,
-            n5.c - n4.c,
-            n5.d - n4.d
-        };
-        std::cout << n7.y << ' ' << n7.a << ' ' << n7.b << ' ' << n7.c << ' ' << n7.d << '\n';
-
-        thirdOrderExpr n8 = {
-            n6.y - n5.y,
-            n6.a - n5.a,
-            n6.b - n5.b,
-            n6.c - n5.c,
-            n6.d - n5.d
-        };
-        std::cout << n8.y << ' ' << n8.a << ' ' << n8.b << ' ' << n8.c << ' ' << n8.d << '\n';
-
-        thirdOrderExpr n9 = {
-            n8.y - n7.y,
-            n8.a - n7.a,
-            n8.b - n7.b,
-            n8.c - n7.c,
-            n8.d - n7.d
-        };
-        std::cout << n9.y << ' ' << n9.a << ' ' << n9.b << ' ' << n9.c << ' ' << n9.d << '\n';
-        int a = n9.y / n9.a;
-        //n8.y = n8.a*a + n8.b*b 
-        int b = (n8.y - a*n8.a)/n8.b;
-        int c = n4.y - ((n4.a * a) + (n4.b * b));
-        int d = input[1] - (a + b + c);
-        std::cout << "a:" << a << " b:" << b << " c:" << c << " d:" << d << '\n';
-        break;
-    }
 }
