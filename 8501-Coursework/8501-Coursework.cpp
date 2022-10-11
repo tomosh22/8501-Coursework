@@ -3,7 +3,7 @@ int factorial(int num) {
     if (num == 1) { return 1; }
     return num * factorial(num - 1);
 }
-struct thirdOrderExpr {
+struct Equation {
     int y; //from input
     int a; //x^4
     int b; //x^3
@@ -11,8 +11,8 @@ struct thirdOrderExpr {
     int d; //x
     int e; //constant
 };
-thirdOrderExpr operator-(const thirdOrderExpr lhs, const thirdOrderExpr rhs) {
-    thirdOrderExpr result;
+Equation operator-(const Equation lhs, const Equation rhs) {
+    Equation result;
     result.y = lhs.y - rhs.y;
     result.a = lhs.a - rhs.a;
     result.b = lhs.b - rhs.b;
@@ -28,25 +28,25 @@ struct result {
     int d; //x
     int e; //constant
 };
-thirdOrderExpr derive_formula(const int* order, const int* input, const int* constantDifference) {
-    thirdOrderExpr formula{};
-    thirdOrderExpr exprs[5][5] = {};
+Equation derive_function(const int* order, const int* input, const int* constantDifference) {
+    Equation formula{};
+    Equation equations[5][5] = {};
     //todo change this to start at index 0 to reduce required number of inputs
     
     for (int x = 0; x < (*order)+1; x++)
     {
-        exprs[0][x].y = input[x + 1];
-        exprs[0][x].a = *order>=4 ? pow(x + 1, 4) : 0;
-        exprs[0][x].b = *order>=3 ? pow(x + 1, 3) : 0;
-        exprs[0][x].c = *order>=2 ? pow(x + 1, 2) : 0;
-        exprs[0][x].d = *order>=1 ? x+1 : 0;
-        exprs[0][x].e = 1;
+        equations[0][x].y = input[x + 1];
+        equations[0][x].a = *order>=4 ? pow(x + 1, 4) : 0;
+        equations[0][x].b = *order>=3 ? pow(x + 1, 3) : 0;
+        equations[0][x].c = *order>=2 ? pow(x + 1, 2) : 0;
+        equations[0][x].d = *order>=1 ? x+1 : 0;
+        equations[0][x].e = 1;
     }
     for (int x = 1; x < (*order)+1; x++)
     {
         for (int y = 0; y < (*order)+1-x; y++)
         {
-            exprs[x][y] = exprs[x - 1][y + 1] - exprs[x - 1][y];
+            equations[x][y] = equations[x - 1][y + 1] - equations[x - 1][y];
         }
     }
     int firstCoeff = (*constantDifference) / factorial(*order);
@@ -57,24 +57,24 @@ thirdOrderExpr derive_formula(const int* order, const int* input, const int* con
     int e = 1;
     for (int x = (*order); x>0; x--)
     {
-        thirdOrderExpr expr = exprs[x-1][0];
-        expr.a *= a;
-        expr.b *= b;
-        expr.c *= c;
-        expr.d *= d;
-        expr.e *= e;
+        Equation equation = equations[x-1][0];
+        equation.a *= a;
+        equation.b *= b;
+        equation.c *= c;
+        equation.d *= d;
+        equation.e *= e;
         switch (x-1) {
         case(0):
-            e = (expr.y - expr.a - expr.b - expr.c - expr.d) / expr.e;
+            e = (equation.y - equation.a - equation.b - equation.c - equation.d) / equation.e;
             break;
         case(1):
-            d = (expr.y - expr.a - expr.b - expr.c - expr.e) / expr.d;
+            d = (equation.y - equation.a - equation.b - equation.c - equation.e) / equation.d;
             break;
         case(2):
-            c = (expr.y - expr.a - expr.b - expr.d - expr.e) / expr.c;
+            c = (equation.y - equation.a - equation.b - equation.d - equation.e) / equation.c;
             break;
         case(3):
-            b = (expr.y - expr.a - expr.c - expr.d - expr.e) / expr.b;
+            b = (equation.y - equation.a - equation.c - equation.d - equation.e) / equation.b;
             break;
         } 
     }
@@ -123,8 +123,11 @@ int main()
     //-6x^2 -84x + 715
     int f[] = { 715, 625, 523, 409, 283, 145, -5, -167, -341, -527, -725, -935, -1157 };
 
+    //-6x^2 - 108x + 523
+    //int f[] = { 523, 409, 283, 145, -5, -167, -341, -527, -725, -935, -1157,-1391,-1637 }; //f shifted over to test different input set
+
     int constantDifference = -1;
     int order = determine_order(f, &constantDifference);
-    thirdOrderExpr idk = derive_formula(&order, f, &constantDifference);
+    Equation idk = derive_function(&order, f, &constantDifference);
     if (order == -1) { std::cout << "order not detected"; }
 }
