@@ -1,4 +1,5 @@
 #include <iostream>
+#include "Approach1.h"
 int factorial(int num) {
     if (num == 1) { return 1; }
     return num * factorial(num - 1);
@@ -105,29 +106,14 @@ int determine_order(int* input, int* constantDifference) {
 }
 int main()
 {
-    //3x^3
-    int a[] = { 0, 3, 24, 81, 192, 375, 648, 1029, 1536, 2187, 3000, 3993, 5184, 6591, 8232, 10125, 12288, 14739, 17496, 20577, 24000 };
     
-    //5x^4 - 9
-    int b[] = { -9, -4, 71, 396, 1271, 3116, 6471, 11996, 20471, 32796, 49991, 73196, 103671, 142796, 192071, 253116, 327671, 417596, 524871, 651596, 799991 };
-
-    //9x^3 + 7x^2 - 2x
-    int c[] = { 0, 14, 96, 300, 680, 1290, 2184, 3416, 5040, 7110, 9680, 12804, 16536, 20930, 26040, 31920, 38624, 46206, 54720, 64220, 74760 };
-
-    //-x^3 + 2x^2 + 5x + 7
-    int d[] = { 7, 13, 17, 13, -5, -43, -107, -203, -337, -515, -743, -1027, -1373, -1787, -2275, -2843, -3497, -4243, -5087, -6035, -7093 };
-
-    //-x^3 -3x + 114
-    int e[] = { 114, 110, 100, 78, 38, -26, -120, -250, -422, -642, -916, -1250, -1650, -2122, -2672, -3306, -4030, -4850, -5772, -6802, -7946 };
-
-    //-6x^2 -84x + 715
-    int f[] = { 715, 625, 523, 409, 283, 145, -5, -167, -341, -527, -725, -935, -1157 };
-
+    Approach1::run();
     //-6x^2 - 108x + 523
     //int f[] = { 523, 409, 283, 145, -5, -167, -341, -527, -725, -935, -1157,-1391,-1637 }; //f shifted over to test different input set
 
     int constantDifference = -1;
-    int order = determine_order(f, &constantDifference);
-    Equation idk = derive_function(&order, f, &constantDifference);
+    int order = determine_order(Sets::f, &constantDifference);
+    Equation idk = derive_function(&order, Sets::f, &constantDifference);
     if (order == -1) { std::cout << "order not detected"; }
 }
+
