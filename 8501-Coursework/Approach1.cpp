@@ -19,18 +19,12 @@ namespace Approach1 {
         result.e = lhs.e - rhs.e;
         return result;
     }
-    struct result {
-        int a; //x^4
-        int b; //x^3
-        int c; //x^2
-        int d; //x
-        int e; //constant
-    };
+    
     int factorial(int num) {
         if (num == 1) { return 1; }
         return num * factorial(num - 1);
     }
-    Equation derive_function(const int* order, const int* input, const int* constantDifference) {
+    result derive_function(const int* order, const int* input, const int* constantDifference) {
         Equation formula{};
         Equation equations[5][5] = {};
         //todo change this to start at index 0 to reduce required number of inputs
@@ -80,13 +74,15 @@ namespace Approach1 {
                 break;
             }
         }
-        return formula;//doesnt actually return values, look at values of a through e for result
+        std::cout << a << "x^4 + " << b << "x^3 + " << c << "x^2 + " << d << "x + " << e << '\n';
+        result r{ a,b,c,d,e };
+        return r;
     }
-    int determine_order(int* input, int* constantDifference) {
+    int determine_order(const int* input, int* constantDifference) {
         int first[5]{};
         int second[4]{};
         int third[3]{};
-        int fourth[2]{};
+        //int fourth[2]{};
         if (input[1] - input[0] == input[2] - input[1]) { *constantDifference = input[1] - input[0]; return 1; }
         for (int a = 0; a < 5; a++)
         {
@@ -105,13 +101,15 @@ namespace Approach1 {
         if (third[1] - third[0] == third[2] - third[1]) { *constantDifference = third[1] - third[0]; return 4; }
         return -1;
     }
-	void run() {
+	result run(const int* input) {
+        //while true(){}
 		for (int x = 0; x < 21; x++)
 		{
             int constantDifference = -1;
-            int order = determine_order(Sets::f, &constantDifference);
-            Equation idk = derive_function(&order, Sets::f, &constantDifference);
+            int order = determine_order(input, &constantDifference);
+            result r = derive_function(&order, input, &constantDifference);
             if (order == -1) { std::cout << "order not detected"; }
+            return r;
 		}
 	}
 }
