@@ -6,6 +6,9 @@
 #include <thread>
 #include <map>
 #include <string>
+#include <fstream>
+#include <stdlib.h>
+#include <array>
 //class Thread {
 //public:
 //    Thread() {};
@@ -41,46 +44,142 @@
 //    WaitForSingleObject(thread_handle, INFINITE);
 //}
 
+
 void create_set() {
-    std::string string;
-    std::cin >> string;
-    return;
+	std::ofstream file("sets.csv", std::ios::app);
+	std::cout << "ax^4 + bx^3 + cx^2 + dx + e\n";
+	int terms[5];
+	std::map<int, char> charMap;
+	charMap[0] = 'a';
+	charMap[1] = 'b';
+	charMap[2] = 'c';
+	charMap[3] = 'd';
+	charMap[4] = 'e';
+	for (int x = 0; x < 5; x++)
+	{
+		do {
+			std::cout << "input value from 0-9 for " << charMap[x] << '\n';
+			std::cin >> terms[x];
+		} while (terms[x] > 9);
+	}
+	int lower = 0;
+	int upper = 0;
+	int values[21];
+	do {
+		std::cout << "range of input set must be 21 or less\n";
+		std::cout << "input value for lower bound of input set\n";
+		std::cin >> lower;
+		std::cout << "input value for upper bound of input set\n";
+		std::cin >> upper;
+	} while (upper - lower > 20);
+	
+	for (int x = lower; x <= upper; x++)
+	{
+		
+		int value = terms[0] * (int)pow(x, 4)
+			+ terms[1] * (int)pow(x, 3)
+			+ terms[2] * (int)pow(x, 2)
+			+ terms[3] * x
+			+ terms[4];
+		values[x - lower] = value;
+		std::cout << value << ' ';
+	}
+	std::cout << '\n';
+	std::cout << "output to file? Y : N\n";
+	char choice;
+	std::cin >> choice;
+	char name[10]{};
+	if (choice == 'Y' || choice == 'y') {
+		
+		std::cout << "input set name (max 10 chars)\n";
+		std::cin >> name;
+		std::cout << name << '\n';
+	}
+	file << name;
+	for (int x = lower; x <= upper; x++)
+	{
+		file << ',' << values[x - lower];
+	}
+	file << '\n';
+	file.close();
+	return;
 }
+
+void read_set(std::map<std::string, std::array<int,21>>* setsMap) {
+	std::ifstream file("sets.csv", std::ios::in);
+	std::map<std::string, int*> readSets;
+	std::string line;
+	char chr;
+	char value[10]{};//can only read integers up to 9999999999
+	int valueIndex = 0;
+	int setIndex = 0;
+	bool nameFound = false;
+	std::string setName;
+	while (file.get(chr)) {
+		if (chr == '\n') {
+			valueIndex = 0; (*setsMap)[setName][setIndex++] = std::stoi(value);
+			for (int x = 0; x < 10; x++)
+			{
+				value[x] = '\0';
+			}
+			nameFound = false; setName = ""; setIndex = 0; continue; }
+		if (!nameFound) {
+			if (chr == ',') {
+				nameFound = true;
+				continue;
+			}
+			setName.push_back(chr);
+		}
+		else {
+			if (chr == ',') { valueIndex = 0; (*setsMap)[setName][setIndex++] = std::stoi(value); continue; }
+			else { value[valueIndex++] = chr; }
+		}
+	}
+	return;
+}
+
+
+void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
+	char choice;
+	while (true) {
+		std::cout << "1. create set\n2. read set";
+		std::cin >> choice;
+		switch (choice)
+		{
+		case '1':
+			system("CLS");
+			create_set();
+			break;
+		case '2':
+			system("CLS");
+			read_set(setsMap);
+			break;
+		}
+	}
+}
+	
 
 int main()
 {
-    //create_set();
-    std::map<int, int*> setsMap;
-    setsMap[0] = Sets::a;
-    setsMap[1] = Sets::b;
-    setsMap[2] = Sets::c;
-    setsMap[3] = Sets::d;
-    setsMap[4] = Sets::e;
-    setsMap[5] = Sets::f;
-    std::thread threads[6]{};
-    Approach1::result results[6];
-    for (int x = 0; x < 6; x++)
-    {
-        threads[x] = std::thread(Approach1::run, setsMap[x]);
-    }
-    for (int x = 0; x < 6; x++) {
-        threads[x].join();
-    }
-
-    /*Approach1::result a1 = Approach1::run(Sets::a);
-    Approach1::result b1 = Approach1::run(Sets::b);
-    Approach1::result c1 = Approach1::run(Sets::c);
-    Approach1::result d1 = Approach1::run(Sets::d);
-    Approach1::result e1 = Approach1::run(Sets::e);
-    Approach1::result f1 = Approach1::run(Sets::f);
-
-    Approach2::result a2 = Approach2::run(Sets::a);
-    Approach2::result b2 = Approach2::run(Sets::b);
-    Approach2::result c2 = Approach2::run(Sets::c);
-    Approach2::result d2 = Approach2::run(Sets::d);
-    Approach2::result e2 = Approach2::run(Sets::e);
-    Approach2::result f2 = Approach2::run(Sets::f);*/
-    
-    return 0;
+	std::map<std::string, std::array<int, 21>> setsMap;
+	cli(&setsMap);
+	
+	/*setsMap[0] = Sets::a;
+	setsMap[1] = Sets::b;
+	setsMap[2] = Sets::c;
+	setsMap[3] = Sets::d;
+	setsMap[4] = Sets::e;
+	setsMap[5] = Sets::f;*/
+	std::thread threads[6]{};
+	Approach1::result results[6];
+	for (int x = 0; x < 6; x++)
+	{
+		//threads[x] = std::thread(Approach1::run, setsMap[x]);
+	}
+	for (int x = 0; x < 6; x++) {
+		threads[x].join();
+	}
+	
+	return 0;
 }
 
