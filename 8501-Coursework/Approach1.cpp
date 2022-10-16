@@ -1,5 +1,6 @@
 #include "Approach1.h"
 #include <iostream>
+#include <array>
 namespace Approach1 {
 	struct Equation {
 		int y; //from input
@@ -24,14 +25,14 @@ namespace Approach1 {
 		if (num == 1) { return 1; }
 		return num * factorial(num - 1);
 	}
-	result derive_function(const int* order, const int* input, const int* constantDifference) {
+	result derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference) {
 		Equation formula{};
 		Equation equations[5][5] = {};
 		//todo change this to start at index 0 to reduce required number of inputs
 
 		for (int x = 0; x < (*order) + 1; x++)
 		{
-			equations[0][x].y = input[x + 1];
+			equations[0][x].y = input->at(x+1);
 			equations[0][x].a = *order >= 4 ? pow(x + 1, 4) : 0;
 			equations[0][x].b = *order >= 3 ? pow(x + 1, 3) : 0;
 			equations[0][x].c = *order >= 2 ? pow(x + 1, 2) : 0;
@@ -78,15 +79,15 @@ namespace Approach1 {
 		result r{ a,b,c,d,e };
 		return r;
 	}
-	int determine_order(const int* input, int* constantDifference) {
+	int determine_order(std::array<int, 21 > *input, int* constantDifference) {
 		int first[5]{};
 		int second[4]{};
 		int third[3]{};
 		//int fourth[2]{};
-		if (input[1] - input[0] == input[2] - input[1]) { *constantDifference = input[1] - input[0]; return 1; }
+		if (input->at(1) - input->at(0) == input->at(2) - input->at(1) ){ *constantDifference = input->at(1) - input->at(0); return 1; }
 		for (int a = 0; a < 5; a++)
 		{
-			first[a] = input[a + 1] - input[a];
+			first[a] = input->at(a + 1) - input->at(a);
 		}
 		if (first[1] - first[0] == first[2] - first[1]) { *constantDifference = first[1] - first[0]; return 2; }
 		for (int b = 0; b < 4; b++)
@@ -101,7 +102,7 @@ namespace Approach1 {
 		if (third[1] - third[0] == third[2] - third[1]) { *constantDifference = third[1] - third[0]; return 4; }
 		return -1;
 	}
-	result run(const int* input) {
+	result run(std::array<int, 21 > *input) {
 		//while true(){}
 		for (int x = 0; x < 21; x++)
 		{

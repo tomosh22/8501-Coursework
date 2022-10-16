@@ -142,7 +142,7 @@ void read_set(std::map<std::string, std::array<int,21>>* setsMap) {
 void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
 	char choice;
 	while (true) {
-		std::cout << "1. create set\n2. read set";
+		std::cout << "1. create set\n2. read set\n3. derive formula from set";
 		std::cin >> choice;
 		switch (choice)
 		{
@@ -153,6 +153,12 @@ void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
 		case '2':
 			system("CLS");
 			read_set(setsMap);
+			break;
+		case '3':
+			system("CLS");
+			std::string setName;
+			std::cin >> setName;
+			Approach1::run(&setsMap->at(setName));
 			break;
 		}
 	}
@@ -170,16 +176,16 @@ int main()
 	setsMap[3] = Sets::d;
 	setsMap[4] = Sets::e;
 	setsMap[5] = Sets::f;*/
-	std::thread threads[6]{};
-	Approach1::result results[6];
-	for (int x = 0; x < 6; x++)
-	{
-		//threads[x] = std::thread(Approach1::run, setsMap[x]);
-	}
-	for (int x = 0; x < 6; x++) {
-		threads[x].join();
-	}
-	
-	return 0;
+	//std::thread threads[6]{};
+	//Approach1::result results[6];
+	//for (int x = 0; x < 6; x++)
+	//{
+	//	//threads[x] = std::thread(Approach1::run, setsMap[x]);
+	//}
+	//for (int x = 0; x < 6; x++) {
+	//	threads[x].join();
+	//}
+	//
+	//return 0;
 }
 
