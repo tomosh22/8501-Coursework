@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
 #include <string>
-namespace Approach2 {
+namespace Approach2Namespace {
 	struct result {
 		int a; //x^4
 		int b; //x^3

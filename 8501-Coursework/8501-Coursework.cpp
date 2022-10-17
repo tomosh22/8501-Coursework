@@ -1,6 +1,6 @@
 #include <iostream>
-#include "Approach1.h"
-#include "Approach2.h"
+#include "Approach1Namespace.h"
+#include "Approach2Namespace.h"
 #include "Sets.h"
 //#include <windows.h>
 #include <thread>
@@ -207,11 +207,11 @@ void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
 		case '3':
 			system("CLS");
 			for (std::pair<std::string, std::array<int, 21>> pair : *setsMap) {
-				Approach2::run(&pair.second, &pair.first);
+				Approach2Namespace::run(&pair.second, &pair.first);
 			}
 			//std::string setName;
 			//std::cin >> setName;
-			//Approach2::run(&setsMap->at(setName));
+			//Approach2Namespace::run(&setsMap->at(setName));
 			break;
 		case '4':
 			return;
@@ -239,7 +239,7 @@ int main()
 		std::array<int, 21 >* input = &(setsMap.at(charMap.at(x)));
 		std::string* setName = &charMap.at(x);
 		auto func = [](std::array<int, 21 >* input, std::string* setName) {
-			Approach1::run(input,setName);
+			Approach1Namespace::run(input,setName);
 		};
 		std::cout << "starting thread " << x << '\n';
 		threads[x] = std::thread(func,input,setName);

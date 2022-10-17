@@ -1,15 +1,7 @@
-#include "Approach1.h"
+#include "Approach1Namespace.h"
 #include <iostream>
 #include <array>
-namespace Approach1 {
-	struct Equation {
-		int y; //from input
-		int a; //x^4
-		int b; //x^3
-		int c; //x^2
-		int d; //x
-		int e; //constant
-	};
+namespace Approach1Namespace {
 	Equation operator-(const Equation lhs, const Equation rhs) {
 		Equation result;
 		result.y = lhs.y - rhs.y;

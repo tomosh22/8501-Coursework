@@ -1,7 +1,7 @@
-#include "Approach2.h"
+#include "Approach2Namespace.h"
 #include <iostream>
 #include <math.h>
-namespace Approach2 {
+namespace Approach2Namespace {
 	
 	result run(const std::array<int, 21 >* input, const std::string* setName) {
 		int highorder = -1;

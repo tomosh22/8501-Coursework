@@ -18,18 +18,18 @@
     <ClCompile Include="8501-Coursework.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Approach1.cpp">
+    <ClCompile Include="Approach1Namespace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Sets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Approach2.cpp">
+    <ClCompile Include="Approach2Namespace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Approach1.h">
+    <ClInclude Include="Approach1Namespace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="resource.h">
@@ -38,7 +38,7 @@
     <ClInclude Include="Sets.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Approach2.h">
+    <ClInclude Include="Approach2Namespace.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

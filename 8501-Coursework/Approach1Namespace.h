@@ -2,7 +2,7 @@
 #include "Sets.h"
 #include <array>
 #include <string>
-namespace Approach1 {
+namespace Approach1Namespace {
 	struct Equation {
 		int y; //from input
 		int a; //x^4
