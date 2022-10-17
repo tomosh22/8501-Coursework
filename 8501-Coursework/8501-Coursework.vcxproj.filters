@@ -27,6 +27,15 @@
     <ClCompile Include="Approach2Namespace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Approach.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Approach1.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Approach2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Approach1Namespace.h">
@@ -39,6 +48,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Approach2Namespace.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Approach.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Approach1.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Approach2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

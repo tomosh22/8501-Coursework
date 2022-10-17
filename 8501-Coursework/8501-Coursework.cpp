@@ -10,6 +10,9 @@
 #include <stdlib.h>
 #include <array>
 #include <functional>
+#include "Approach.h"
+#include "Approach1.h"
+#include "Approach2.h"
 //class Thread {
 //public:
 //    Thread() {};
@@ -45,33 +48,10 @@
 //    WaitForSingleObject(thread_handle, INFINITE);
 //}
 
-class Approach {
-public:
-		Approach() {};
-		~Approach() {};
-		virtual void run();
-		int factorial() {};
-		struct result {
-			int a; //x^4
-			int b; //x^3
-			int c; //x^2
-			int d; //x
-			int e; //constant
-		};
-};
 
-class Approach2Class : Approach {
-public:
-	void run();
-protected:
-	void set_order_and_lead_coeff(const int* input, int* order, int* leadCoeff);
-};
 
-class Approach1Class : Approach {
-	int determine_order(std::array<int, 21 >* input, int* constantDifference);
-	result derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference);
 
-};
+
 
 
 void create_set() {
@@ -234,6 +214,12 @@ int main()
 	charMap[4] = "e";
 	charMap[5] = "f";
 	std::thread threads[6]{};
+
+	Approach2 solver = Approach2();
+	std::string name = "a";
+	solver.run(&(setsMap.at(charMap.at(0))),&name);
+
+	return 0;
 	for (int x = 0; x < 6; x++)
 	{
 		std::array<int, 21 >* input = &(setsMap.at(charMap.at(x)));
