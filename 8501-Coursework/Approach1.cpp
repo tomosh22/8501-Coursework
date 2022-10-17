@@ -22,10 +22,10 @@ namespace Approach1 {
 	}
 	
 	int factorial(int num) {
-		if (num == 1) { return 1; }
+		if (num <= 1) { return 1; }
 		return num * factorial(num - 1);
 	}
-	result derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference) {
+	result derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference, const std::string* setName) {
 		Equation formula{};
 		Equation equations[5][5] = {};
 		//todo change this to start at index 0 to reduce required number of inputs
@@ -75,7 +75,7 @@ namespace Approach1 {
 				break;
 			}
 		}
-		std::cout << a << "x^4 + " << b << "x^3 + " << c << "x^2 + " << d << "x + " << e << '\n';
+		std::cout << *setName << ' ' << a << "x^4 + " << b << "x^3 + " << c << "x^2 + " << d << "x + " << e << '\n';
 		result r{ a,b,c,d,e };
 		return r;
 	}
@@ -102,15 +102,15 @@ namespace Approach1 {
 		if (third[1] - third[0] == third[2] - third[1]) { *constantDifference = third[1] - third[0]; return 4; }
 		return -1;
 	}
-	result run(std::array<int, 21 > *input) {
+	void run(std::array<int, 21 > *input, const std::string* setName) {
 		//while true(){}
 		for (int x = 0; x < 21; x++)
 		{
 			int constantDifference = -1;
 			int order = determine_order(input, &constantDifference);
-			result r = derive_function(&order, input, &constantDifference);
+			result r = derive_function(&order, input, &constantDifference, setName);
 			if (order == -1) { std::cout << "order not detected"; }
-			return r;
+			return;
 		}
 	}
 }

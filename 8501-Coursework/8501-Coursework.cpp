@@ -9,6 +9,7 @@
 #include <fstream>
 #include <stdlib.h>
 #include <array>
+#include <functional>
 //class Thread {
 //public:
 //    Thread() {};
@@ -44,9 +45,36 @@
 //    WaitForSingleObject(thread_handle, INFINITE);
 //}
 
+class Approach {
+public:
+		Approach() {};
+		~Approach() {};
+		virtual void run();
+		int factorial() {};
+		struct result {
+			int a; //x^4
+			int b; //x^3
+			int c; //x^2
+			int d; //x
+			int e; //constant
+		};
+};
+
+class Approach2Class : Approach {
+public:
+	void run();
+protected:
+	void set_order_and_lead_coeff(const int* input, int* order, int* leadCoeff);
+};
+
+class Approach1Class : Approach {
+	int determine_order(std::array<int, 21 >* input, int* constantDifference);
+	result derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference);
+
+};
+
 
 void create_set() {
-	std::ofstream file("sets.csv", std::ios::app);
 	std::cout << "ax^4 + bx^3 + cx^2 + dx + e\n";
 	int terms[5];
 	std::map<int, char> charMap;
@@ -75,7 +103,6 @@ void create_set() {
 	
 	for (int x = lower; x <= upper; x++)
 	{
-		
 		int value = terms[0] * (int)pow(x, 4)
 			+ terms[1] * (int)pow(x, 3)
 			+ terms[2] * (int)pow(x, 2)
@@ -95,17 +122,24 @@ void create_set() {
 		std::cin >> name;
 		std::cout << name << '\n';
 	}
-	file << name;
-	for (int x = lower; x <= upper; x++)
-	{
-		file << ',' << values[x - lower];
+	try {
+		std::ofstream file("sets.csv", std::ios::app);
+		file << name;
+		for (int x = lower; x <= upper; x++)
+		{
+			file << ',' << values[x - lower];
+		}
+		file << '\n';
+		file.close();
 	}
-	file << '\n';
-	file.close();
+	catch (std::ofstream::failure e) {
+		std::cout << e.what();
+	}
+	
 	return;
 }
 
-void read_set(std::map<std::string, std::array<int,21>>* setsMap) {
+void read_sets(std::map<std::string, std::array<int,21>>* setsMap) {
 	std::ifstream file("sets.csv", std::ios::in);
 	std::map<std::string, int*> readSets;
 	std::string line;
@@ -115,26 +149,42 @@ void read_set(std::map<std::string, std::array<int,21>>* setsMap) {
 	int setIndex = 0;
 	bool nameFound = false;
 	std::string setName;
-	while (file.get(chr)) {
-		if (chr == '\n') {
-			valueIndex = 0; (*setsMap)[setName][setIndex++] = std::stoi(value);
-			for (int x = 0; x < 10; x++)
-			{
-				value[x] = '\0';
+	try {
+		if (!file.is_open()) { throw std::ifstream::failure("Error reading file"); }
+		while (file.get(chr)) {
+				if (chr == '\n') {
+					valueIndex = 0; (*setsMap)[setName][setIndex++] = std::stoi(value);
+					for (int x = 0; x < 10; x++)
+					{
+						value[x] = '\0';
+					}
+					nameFound = false; setName = ""; setIndex = 0; continue; }
+				if (!nameFound) {
+					if (chr == ',') {
+						nameFound = true;
+						continue;
+					}
+					setName.push_back(chr);
+				}
+				else {
+					if (chr == ',') {
+				
+						valueIndex = 0; (*setsMap)[setName][setIndex++] = std::stoi(value);
+						for (int x = 0; x < 10; x++)
+						{
+							value[x] = '\0';
+						}
+						continue; }
+					else { value[valueIndex++] = chr; }
+				}
 			}
-			nameFound = false; setName = ""; setIndex = 0; continue; }
-		if (!nameFound) {
-			if (chr == ',') {
-				nameFound = true;
-				continue;
-			}
-			setName.push_back(chr);
-		}
-		else {
-			if (chr == ',') { valueIndex = 0; (*setsMap)[setName][setIndex++] = std::stoi(value); continue; }
-			else { value[valueIndex++] = chr; }
-		}
 	}
+	catch (const std::ios_base::failure& e) {
+		std::cout << e.what() << "\nSpace - Enter to continue";
+		while (true) { if (std::cin.get() == ' ') { break; } }
+		system("CLS");
+	}
+	
 	return;
 }
 
@@ -142,7 +192,7 @@ void read_set(std::map<std::string, std::array<int,21>>* setsMap) {
 void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
 	char choice;
 	while (true) {
-		std::cout << "1. create set\n2. read set\n3. derive formula from set";
+		std::cout << "1. create set\n2. read sets\n3. derive formula from set\n";
 		std::cin >> choice;
 		switch (choice)
 		{
@@ -152,15 +202,21 @@ void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
 			break;
 		case '2':
 			system("CLS");
-			read_set(setsMap);
+			read_sets(setsMap);
 			break;
 		case '3':
 			system("CLS");
-			std::string setName;
-			std::cin >> setName;
-			Approach1::run(&setsMap->at(setName));
+			for (std::pair<std::string, std::array<int, 21>> pair : *setsMap) {
+				Approach2::run(&pair.second, &pair.first);
+			}
+			//std::string setName;
+			//std::cin >> setName;
+			//Approach2::run(&setsMap->at(setName));
 			break;
+		case '4':
+			return;
 		}
+
 	}
 }
 	
@@ -168,24 +224,31 @@ void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
 int main()
 {
 	std::map<std::string, std::array<int, 21>> setsMap;
-	cli(&setsMap);
+	//cli(&setsMap);
+	read_sets(&setsMap);
+	std::map<int, std::string> charMap;
+	charMap[0] = "a";
+	charMap[1] = "b";
+	charMap[2] = "c";
+	charMap[3] = "d";
+	charMap[4] = "e";
+	charMap[5] = "f";
+	std::thread threads[6]{};
+	for (int x = 0; x < 6; x++)
+	{
+		std::array<int, 21 >* input = &(setsMap.at(charMap.at(x)));
+		std::string* setName = &charMap.at(x);
+		auto func = [](std::array<int, 21 >* input, std::string* setName) {
+			Approach1::run(input,setName);
+		};
+		std::cout << "starting thread " << x << '\n';
+		threads[x] = std::thread(func,input,setName);
+	}
+	for (int x = 0; x < 6; x++) {
+		
+		threads[x].join();
+	}
 	
-	/*setsMap[0] = Sets::a;
-	setsMap[1] = Sets::b;
-	setsMap[2] = Sets::c;
-	setsMap[3] = Sets::d;
-	setsMap[4] = Sets::e;
-	setsMap[5] = Sets::f;*/
-	//std::thread threads[6]{};
-	//Approach1::result results[6];
-	//for (int x = 0; x < 6; x++)
-	//{
-	//	//threads[x] = std::thread(Approach1::run, setsMap[x]);
-	//}
-	//for (int x = 0; x < 6; x++) {
-	//	threads[x].join();
-	//}
-	//
-	//return 0;
+	return 0;
 }
 

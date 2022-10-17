@@ -3,13 +3,13 @@
 #include <math.h>
 namespace Approach2 {
 	
-	result run(const int* input) {
+	result run(const std::array<int, 21 >* input, const std::string* setName) {
 		int highorder = -1;
 		int leadCoeff = -1;
 		int set[20];
 		for (int x = 0; x < 20; x++)
 		{
-			set[x] = input[x];
+			set[x] = input->at(x);
 		}
 		int terms[5]{};
 		set_order_and_lead_coeff(set,&highorder,&leadCoeff);
@@ -33,7 +33,13 @@ namespace Approach2 {
 			}
 			terms[5 - order] = values[order - 1][0] / factorial(order - 1);
 		}
-		std::cout << terms[0] << "x^4 + " << terms[1] << "x^3 + " << terms[2] << "x^2 + " << terms[3] << "x + " << terms[4] << '\n';
+		std::cout << *setName << ' '
+			<< ((bool)terms[0] ? (terms[0] < 0 ? "\0" : "+ ") + std::to_string(terms[0]) + "x^4 " : "\0")
+			<< ((bool)terms[1] ? (terms[1] < 0 ? "\0" : "+ ") + std::to_string(terms[1]) + "x^3 " : "\0")
+			<< ((bool)terms[2] ? (terms[2] < 0 ? "\0" : "+ ") + std::to_string(terms[2]) + "x^2 " : "\0")
+			<< ((bool)terms[3] ? (terms[3] < 0 ? "\0" : "+ ") + std::to_string(terms[3]) + "x " : "\0")
+			<< ((bool)terms[4] ? (terms[4] < 0 ? "\0" : "+ ") + std::to_string(terms[4]) : "\0")
+			<< '\n';
 		result r{ terms[0],terms[1],terms[2],terms[3],terms[4] };
 		return r;
 	}
@@ -42,7 +48,7 @@ namespace Approach2 {
 		return num * factorial(num - 1);
 	}
 	
-	void set_order_and_lead_coeff(int* input, int* order, int* leadCoeff) {
+	void set_order_and_lead_coeff(const int* input, int* order, int* leadCoeff) {
 		int values[5][5]{};
 		for (int x = 0; x < 5; x++)
 		{
