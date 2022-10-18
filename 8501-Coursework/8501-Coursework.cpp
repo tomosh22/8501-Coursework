@@ -215,20 +215,21 @@ int main()
 	charMap[5] = "f";
 	std::thread threads[6]{};
 
-	Approach2 solver = Approach2();
+	/*Approach2 solver = Approach2();
 	std::string name = "a";
-	solver.run(&(setsMap.at(charMap.at(0))),&name);
+	solver.run(&(setsMap.at(charMap.at(0))),&name);*/
 
-	return 0;
+	//return 0;
 	for (int x = 0; x < 6; x++)
 	{
+		Approach2 solver = Approach2();
 		std::array<int, 21 >* input = &(setsMap.at(charMap.at(x)));
 		std::string* setName = &charMap.at(x);
-		auto func = [](std::array<int, 21 >* input, std::string* setName) {
-			Approach1Namespace::run(input,setName);
+		auto func = [](std::array<int, 21 >* input, std::string* setName, Approach2 solver) {
+			solver.run(input,setName);
 		};
 		std::cout << "starting thread " << x << '\n';
-		threads[x] = std::thread(func,input,setName);
+		threads[x] = std::thread(func,input,setName,solver);
 	}
 	for (int x = 0; x < 6; x++) {
 		

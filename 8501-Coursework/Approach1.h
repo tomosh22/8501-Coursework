@@ -3,7 +3,7 @@
 #include "Approach.h"
 #include <string>
 #include <iostream>
-class Approach1 : Approach {
+class Approach1 : public Approach {
 public:
 	struct Equation {
 		int y; //from input
