@@ -1,5 +1,5 @@
 #include "Approach2.h"
-Approach::result Approach2::run(const std::array<int, 21 >* input, const std::string* setName) {
+Approach::result Approach2::run(std::array<int, 21 >* input, const std::string* setName) {
 	int highorder = -1;
 	int leadCoeff = -1;
 	int set[20];
@@ -11,7 +11,7 @@ Approach::result Approach2::run(const std::array<int, 21 >* input, const std::st
 	calculate_order_and_lead_coeff(set, &highorder, &leadCoeff);
 	terms[4 - highorder] = leadCoeff;
 	calculate_remaining_coeffs(terms, &highorder, set);
-	display_result(setName, terms);
+	//display_result(setName, terms);
 	result r{ terms[0],terms[1],terms[2],terms[3],terms[4] };
 	return r;
 }

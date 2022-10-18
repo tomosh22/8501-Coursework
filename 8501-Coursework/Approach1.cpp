@@ -76,19 +76,19 @@ Approach::result Approach1::derive_function(const int* order, std::array<int, 21
 			break;
 		}
 	}
-	display_result(setName, terms);
+	//display_result(setName, terms);
 	result r{ terms[0],terms[1],terms[2],terms[3],terms[4] };
 	return r;
 }
 
-void Approach1::run(std::array<int, 21 >* input, const std::string* setName) {
+Approach::result Approach1::run(std::array<int, 21 >* input, const std::string* setName) {
 	for (int x = 0; x < 21; x++)
 	{
 		int constantDifference = -1;
 		int order = determine_order(input, &constantDifference);
 		result r = derive_function(&order, input, &constantDifference, setName);
 		if (order == -1) std::cout << "order not detected";
-		return;
+		return r;
 	}
 }
 

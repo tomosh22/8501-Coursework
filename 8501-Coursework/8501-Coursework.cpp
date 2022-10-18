@@ -13,6 +13,7 @@
 #include "Approach.h"
 #include "Approach1.h"
 #include "Approach2.h"
+#include <vector>
 
 std::map<int, char> create_char_map() {
 	std::map<int, char> charMap;
@@ -30,7 +31,8 @@ void get_terms_from_user(int* terms, const std::map<int, char>* charMap) {
 		do {
 			std::cout << "input value from 0-9 for " << charMap->at(x) << '\n';
 			std::cin >> terms[x];
-		} while (terms[x] > 9);
+			//} while (terms[x] > 9);
+		} while (false);
 	}
 }
 
@@ -164,6 +166,8 @@ void read_sets(std::map<std::string, std::array<int,21>>* setsMap) {
 
 void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
 	char choice;
+	std::vector<std::thread> threads;
+	std::map<std::string, Approach::result> results;
 	while (true) {
 		std::cout << "1. create set\n2. read sets\n3. derive formula from set\n";
 		std::cin >> choice;
@@ -180,7 +184,18 @@ void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
 		case '3':
 			system("CLS");
 			for (std::pair<std::string, std::array<int, 21>> pair : *setsMap) {
-				Approach2Namespace::run(&pair.second, &pair.first);
+				auto func = [](std::pair<std::string, std::array<int, 21>> pair, std::map<std::string, Approach::result>* results){
+					Approach2 solver = Approach2();
+					(*results)[pair.first] = solver.run(&pair.second, &pair.first);
+				};
+				threads.push_back(std::thread(func, pair,&results));
+			}
+			for ( std::thread &thread : threads )
+			{
+				thread.join();
+			}
+			for (std::pair<std::string, Approach::result> pair : results) {
+				Approach::display_result(&pair.first, &pair.second);
 			}
 			break;
 		case '4':
@@ -193,15 +208,9 @@ void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
 int main()
 {
 	std::map<std::string, std::array<int, 21>> setsMap;
-	//cli(&setsMap);
+	cli(&setsMap);
 	read_sets(&setsMap);
-	std::map<int, std::string> charMap;
-	charMap[0] = "a";
-	charMap[1] = "b";
-	charMap[2] = "c";
-	charMap[3] = "d";
-	charMap[4] = "e";
-	charMap[5] = "f";
+	std::map<int, std::string> charMap{{0,"a"},{1,"b"},{2,"c"},	{3,"d"},{4,"e"},{5,"f"} };
 	std::thread threads[6]{};
 	for (int x = 2; x < 3; x++)
 	{

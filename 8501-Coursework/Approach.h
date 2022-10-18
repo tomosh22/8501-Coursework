@@ -6,10 +6,7 @@ class Approach {
 public:
 	Approach() {};
 	~Approach() {};
-	virtual void run(std::array<int, 21 >* input, const std::string* setName) {};
-protected:
-	void display_result(const std::string* setName, const int* terms);
-	int factorial(int num);
+	
 	struct result {
 		int a; //x^4
 		int b; //x^3
@@ -17,4 +14,10 @@ protected:
 		int d; //x
 		int e; //constant
 	};
+	virtual result run(std::array<int, 21 >* input, const std::string* setName) = 0;
+	static void display_result(const std::string* setName, const result* result);
+protected:
+	
+	int  factorial(int num);
+	
 };
