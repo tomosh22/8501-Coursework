@@ -45,7 +45,6 @@ int Approach1::determine_order(std::array<int, 21 >* input, int* constantDiffere
 Approach::result Approach1::derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference, const std::string* setName) {
 	Equation formula{};
 	std::array<std::array<Equation, 5>, 5> equations = std::array<std::array<Equation, 5>, 5>();
-	//todo change this to start at index 0 to reduce required number of inputs
 	setup_equations(&equations, order,input);
 	for (int x = 1; x < (*order) + 1; x++)
 	{
