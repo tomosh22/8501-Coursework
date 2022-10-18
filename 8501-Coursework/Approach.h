@@ -1,13 +1,14 @@
 #pragma once
 #include <array>
 #include <string>
+#include <iostream>
 class Approach {
 public:
 	Approach() {};
 	~Approach() {};
 	virtual void run(std::array<int, 21 >* input, const std::string* setName) {};
 protected:
-	
+	void display_result(const std::string* setName, const int* terms);
 	int factorial(int num);
 	struct result {
 		int a; //x^4

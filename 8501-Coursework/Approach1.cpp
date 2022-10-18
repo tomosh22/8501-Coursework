@@ -10,7 +10,14 @@ Approach1::Equation operator - (const Approach1::Equation lhs, const Approach1::
 	result.e = lhs.e - rhs.e;
 	return result;
 }
-
+Approach1::Equation operator *(Approach1::Equation lhs, const int* rhs) {
+	lhs.a *= rhs[0];
+	lhs.b *= rhs[1];
+	lhs.c *= rhs[2];
+	lhs.d *= rhs[3];
+	lhs.e *= rhs[4];
+	return lhs;
+}
 int Approach1::determine_order(std::array<int, 21 >* input, int* constantDifference) {
 	int first[5]{};
 	int second[4]{};
@@ -37,18 +44,9 @@ int Approach1::determine_order(std::array<int, 21 >* input, int* constantDiffere
 
 Approach::result Approach1::derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference, const std::string* setName) {
 	Equation formula{};
-	Equation equations[5][5] = {};
+	std::array<std::array<Equation, 5>, 5> equations = std::array<std::array<Equation, 5>, 5>();
 	//todo change this to start at index 0 to reduce required number of inputs
-
-	for (int x = 0; x < (*order) + 1; x++)
-	{
-		equations[0][x].y = input->at(x + 1);
-		equations[0][x].a = *order >= 4 ? pow(x + 1, 4) : 0;
-		equations[0][x].b = *order >= 3 ? pow(x + 1, 3) : 0;
-		equations[0][x].c = *order >= 2 ? pow(x + 1, 2) : 0;
-		equations[0][x].d = *order >= 1 ? x + 1 : 0;
-		equations[0][x].e = 1;
-	}
+	setup_equations(&equations, order,input);
 	for (int x = 1; x < (*order) + 1; x++)
 	{
 		for (int y = 0; y < (*order) + 1 - x; y++)
@@ -57,47 +55,60 @@ Approach::result Approach1::derive_function(const int* order, std::array<int, 21
 		}
 	}
 	int firstCoeff = (*constantDifference) / factorial(*order);
-	int a = *order >= 4 ? (*order == 4 ? firstCoeff : 1) : 0;
-	int b = *order >= 3 ? (*order == 3 ? firstCoeff : 1) : 0;
-	int c = *order >= 2 ? (*order == 2 ? firstCoeff : 1) : 0;
-	int d = *order >= 1 ? (*order == 1 ? firstCoeff : 1) : 0;
-	int e = 1;
+	int terms[5]{};
+	setup_coeffs(order, &firstCoeff, terms);
+	
 	for (int x = (*order); x > 0; x--)
 	{
 		Equation equation = equations[x - 1][0];
-		equation.a *= a;
-		equation.b *= b;
-		equation.c *= c;
-		equation.d *= d;
-		equation.e *= e;
+		equation = equation * terms;
 		switch (x - 1) {
 		case(0):
-			e = (equation.y - equation.a - equation.b - equation.c - equation.d) / equation.e;
+			terms[4] = (equation.y - equation.a - equation.b - equation.c - equation.d) / equation.e;
 			break;
 		case(1):
-			d = (equation.y - equation.a - equation.b - equation.c - equation.e) / equation.d;
+			terms[3] = (equation.y - equation.a - equation.b - equation.c - equation.e) / equation.d;
 			break;
 		case(2):
-			c = (equation.y - equation.a - equation.b - equation.d - equation.e) / equation.c;
+			terms[2] = (equation.y - equation.a - equation.b - equation.d - equation.e) / equation.c;
 			break;
 		case(3):
-			b = (equation.y - equation.a - equation.c - equation.d - equation.e) / equation.b;
+			terms[1] = (equation.y - equation.a - equation.c - equation.d - equation.e) / equation.b;
 			break;
 		}
 	}
-	std::cout << *setName << ' ' << a << "x^4 + " << b << "x^3 + " << c << "x^2 + " << d << "x + " << e << '\n';
-	result r{ a,b,c,d,e };
+	display_result(setName, terms);
+	result r{ terms[0],terms[1],terms[2],terms[3],terms[4] };
 	return r;
 }
 
 void Approach1::run(std::array<int, 21 >* input, const std::string* setName) {
-	//while true(){}
 	for (int x = 0; x < 21; x++)
 	{
 		int constantDifference = -1;
 		int order = determine_order(input, &constantDifference);
 		result r = derive_function(&order, input, &constantDifference, setName);
-		if (order == -1) { std::cout << "order not detected"; }
+		if (order == -1) std::cout << "order not detected";
 		return;
 	}
+}
+
+void Approach1::setup_equations(std::array<std::array<Equation, 5>, 5>* equations, const int* order, const std::array<int,21>* input) {
+	for (int x = 0; x < (*order) + 1; x++)
+	{
+		equations->at(0).at(x).y = input->at(x);
+		equations->at(0).at(x).a = *order >= 4 ? pow(x, 4) : 0;
+		equations->at(0).at(x).b = *order >= 3 ? pow(x, 3) : 0;
+		equations->at(0).at(x).c = *order >= 2 ? pow(x, 2) : 0;
+		equations->at(0).at(x).d = *order >= 1 ? x : 0;
+		equations->at(0).at(x).e = 1;
+	}
+}
+
+void Approach1::setup_coeffs(const int* order, const int* firstCoeff, int* terms) {
+	terms[0] = *order >= 4 ? (*order == 4 ? *firstCoeff : 1) : 0;
+	terms[1] = *order >= 3 ? (*order == 3 ? *firstCoeff : 1) : 0;
+	terms[2] = *order >= 2 ? (*order == 2 ? *firstCoeff : 1) : 0;
+	terms[3] = *order >= 1 ? (*order == 1 ? *firstCoeff : 1) : 0;
+	terms[4] = 1;
 }

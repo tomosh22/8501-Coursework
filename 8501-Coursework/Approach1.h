@@ -17,6 +17,8 @@ public:
 protected:
 	int determine_order(std::array<int, 21 >* input, int* constantDifference);
 	result derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference, const std::string* setName);
+	void setup_equations(std::array<std::array<Equation, 5>, 5>* equations, const int* order, const std::array<int, 21>* input);
+	void setup_coeffs(const int* order, const int* firstCoeff, int* terms);
 	//Equation operator-(const Equation lhs, const Equation rhs);
 };
 

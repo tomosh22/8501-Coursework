@@ -16,15 +16,7 @@ Approach::result Approach2::run(const std::array<int, 21 >* input, const std::st
 	return r;
 }
 
-void Approach2::display_result(const std::string* setName, const int* terms) {
-	std::cout << *setName << ' '
-		<< ((bool)terms[0] ? (terms[0] < 0 ? "\0" : "+ ") + std::to_string(terms[0]) + "x^4 " : "\0")
-		<< ((bool)terms[1] ? (terms[1] < 0 ? "\0" : "+ ") + std::to_string(terms[1]) + "x^3 " : "\0")
-		<< ((bool)terms[2] ? (terms[2] < 0 ? "\0" : "+ ") + std::to_string(terms[2]) + "x^2 " : "\0")
-		<< ((bool)terms[3] ? (terms[3] < 0 ? "\0" : "+ ") + std::to_string(terms[3]) + "x " : "\0")
-		<< ((bool)terms[4] ? (terms[4] < 0 ? "\0" : "+ ") + std::to_string(terms[4]) : "\0")
-		<< '\n';
-}
+
 
 
 void Approach2::calculate_order_and_lead_coeff(const int* input, int* order, int* leadCoeff) {

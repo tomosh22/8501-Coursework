@@ -7,5 +7,6 @@ public:
 protected:
 	void calculate_order_and_lead_coeff(const int* input, int* order, int* leadCoeff);
 	void calculate_remaining_coeffs(int* terms, const int* highorder, int* set);
-	void display_result(const std::string* setName, const int* terms);
+	
+	
 };
