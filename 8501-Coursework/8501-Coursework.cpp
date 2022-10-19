@@ -170,7 +170,7 @@ void cli(std::map<std::string, std::vector<int>>* setsMap) {
 	char choice;
 	std::vector<std::thread> threads;
 	std::map<std::string, Approach::result> results;
-	Approach2 solver = Approach2();
+	Approach1 solver = Approach1();
 	while (true) {
 		std::cout << "1. create set\n2. read sets\n3. derive formula from set\n";
 		std::cin >> choice;
@@ -193,7 +193,6 @@ void cli(std::map<std::string, std::vector<int>>* setsMap) {
 				for (std::pair<std::string, Approach::result> pair : results) {
 					Approach::display_result(&pair.first, &pair.second);
 					file << ' ' << Approach::result_string(&pair.first, &pair.second);
-					
 					file << '\n';
 				}
 				file.close();
@@ -222,24 +221,6 @@ int main()
 {
 	std::map<std::string, std::vector<int>> setsMap;
 	cli(&setsMap);
-	read_sets(&setsMap);
-	std::map<int, std::string> charMap{{0,"a"},{1,"b"},{2,"c"},	{3,"d"},{4,"e"},{5,"f"} };
-	std::thread threads[6]{};
-	for (int x = 2; x < 3; x++)
-	{
-		Approach1 solver = Approach1();
-		std::vector<int>* input = &(setsMap.at(charMap.at(x)));
-		std::string* setName = &charMap.at(x);
-		auto func = [](std::vector<int>* input, std::string* setName, Approach1 solver) {
-			solver.run(input,setName);
-		};
-		std::cout << "starting thread " << x << '\n';
-		threads[x] = std::thread(func,input,setName,solver);
-	}
-	for (int x = 2; x < 3; x++) {
-		
-		threads[x].join();
-	}
 	
 	return 0;
 }
