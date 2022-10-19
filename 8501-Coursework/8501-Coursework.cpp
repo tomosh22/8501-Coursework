@@ -59,17 +59,13 @@ void generate_set_from_input_set(std::vector<int>* values, const int* terms, con
 	}
 }
 
-void write_set_to_file(const int* lower, const int* upper, const std::vector<int>* values) {
-	char name[10]{};
-	std::cout << "input set name (max 10 chars)\n";
-	std::cin >> name;
-	std::cout << name << '\n';
+void write_set_to_file(const std::vector<int>* values) {
 	try {
 		std::ofstream file("sets.csv", std::ios::app);
-		file << name;
-		for (int x = *lower; x <= *upper; x++)
+		file << values->at(0);
+		for (int x = 0; x <= values->size(); x++)
 		{
-			file << ',' << values->at(x - *lower);
+			file << ',' << values->at(x);
 		}
 		file << '\n';
 		file.close();
@@ -96,28 +92,27 @@ void create_set() {
 	std::cin >> choice;
 	
 	if (choice == 'Y' || choice == 'y') {
-		write_set_to_file(&lower, &upper, &values);
+		write_set_to_file(&values);
 	}
 	
 	
 	return;
 }
 
-void handle_new_line(int* valueIndex, int* setIndex, bool* nameFound, std::string* setName, char* value, std::map<std::string, std::vector<int>>* setsMap) {
+void handle_new_line(int* valueIndex, int* setIndex, char* value, std::map<std::string, std::vector<int>>* setsMap, int* mapIndex) {
 	*valueIndex = 0;
-	(*setsMap)[*setName].push_back(std::stoi(value));
+	(*setsMap)[std::to_string(*(mapIndex))].push_back(std::stoi(value));
 	for (int x = 0; x < 10; x++) {
 		value[x] = '\0';
 	}
-	*nameFound = false;
-	*setName = "";
 	*setIndex = 0;
+	*mapIndex = *mapIndex + 1;
 	return;
 }
 
-void handle_new_value(int* valueIndex, int* setIndex, std::string* setName, char* value, std::map<std::string, std::vector<int>>* setsMap) {
+void handle_new_value(int* valueIndex, int* setIndex,  char* value, std::map<std::string, std::vector<int>>* setsMap, int* mapIndex) {
 	*valueIndex = 0;
-	(*setsMap)[*setName].push_back(std::stoi(value));
+	(*setsMap)[std::to_string(*mapIndex)].push_back(std::stoi(value));
 	for (int x = 0; x < 10; x++) {
 		value[x] = '\0';
 	}
@@ -131,25 +126,17 @@ void read_sets(std::map<std::string, std::vector<int>>* setsMap) {
 	char value[10]{};//can only read integers up to 9999999999
 	int valueIndex = 0;
 	int setIndex = 0;
-	bool nameFound = false;
-	std::string setName;
+	int mapIndex = 0;
 	try {
 		if (!file.is_open()) throw std::ifstream::failure("Error reading file");
 		while (file.get(chr)) {
 				if (chr == '\n') {
-					handle_new_line(&valueIndex, &setIndex, &nameFound, &setName, value, setsMap);
+					handle_new_line(&valueIndex, &setIndex, value, setsMap, &mapIndex);
 					continue;
-				}
-				if (!nameFound) {
-					if (chr == ',') {
-						nameFound = true;
-						continue;
-					}
-					setName.push_back(chr);
 				}
 				else {
 					if (chr == ',') {
-						handle_new_value(&valueIndex, &setIndex, &setName, value, setsMap);
+						handle_new_value(&valueIndex, &setIndex, value, setsMap, &mapIndex);
 						continue;
 					}
 					else { value[valueIndex++] = chr; }
@@ -183,7 +170,7 @@ void cli(std::map<std::string, std::vector<int>>* setsMap) {
 	char choice;
 	std::vector<std::thread> threads;
 	std::map<std::string, Approach::result> results;
-	Approach1 solver = Approach1();
+	Approach2 solver = Approach2();
 	while (true) {
 		std::cout << "1. create set\n2. read sets\n3. derive formula from set\n";
 		std::cin >> choice;
@@ -200,6 +187,7 @@ void cli(std::map<std::string, std::vector<int>>* setsMap) {
 		case '3':
 			system("CLS");
 			create_threads(setsMap, &threads, &results, &solver);
+			threads.clear();
 			try {
 				std::ofstream file("expressions.csv", std::ios::out);
 				for (std::pair<std::string, Approach::result> pair : results) {
@@ -208,7 +196,6 @@ void cli(std::map<std::string, std::vector<int>>* setsMap) {
 					
 					file << '\n';
 				}
-				
 				file.close();
 			}
 			catch (std::ofstream::failure e) {
