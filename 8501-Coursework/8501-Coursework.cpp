@@ -186,12 +186,20 @@ void cli(std::vector<std::vector<int>>* sets) {
 			read_sets(sets);
 			break;
 		case '3':
+			
+			if (sets->size() == 0) {
+				system("CLS");
+				std::cout << "no sets read\nSpace - Enter to continue";
+				while (true) { if (std::cin.get() == ' ') { break; } }
+				system("CLS");
+				break;
+			}
 			system("CLS");
 			create_threads(sets, &threads, &results, &solver);
 			threads.clear();
 			try {
 				std::ofstream file("expressions.csv", std::ios::out);
-				for (std::pair<int, Approach::result> pair : results) {
+				for (std::pair<int, Approach::result> const& pair : results) {
 					Approach::display_result(&pair.second);
 					file << ' ' << Approach::result_string(&pair.second);
 					file << '\n';
