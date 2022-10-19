@@ -67,5 +67,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="sets.csv" />
+    <None Include="expressions.csv" />
   </ItemGroup>
 </Project>

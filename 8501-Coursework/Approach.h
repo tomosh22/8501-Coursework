@@ -16,6 +16,7 @@ public:
 	};
 	virtual result run(std::array<int, 21 >* input, const std::string* setName) = 0;
 	static void display_result(const std::string* setName, const result* result);
+	static std::string result_string(const std::string* setName, const result* result);
 protected:
 	
 	int  factorial(int num);

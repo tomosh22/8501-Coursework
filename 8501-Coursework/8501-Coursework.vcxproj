@@ -160,6 +160,7 @@
     <ResourceCompile Include="8501-Coursework.rc" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="expressions.csv" />
     <None Include="sets.csv" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
