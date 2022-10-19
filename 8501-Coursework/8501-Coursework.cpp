@@ -204,10 +204,10 @@ void cli(std::map<std::string, std::vector<int>>* setsMap) {
 			break;
 		case '4':
 			Approach2 solver = Approach2();
-			std::string f = "f";
+			std::string f = "5";
 			for (int x = -50; x < 50; x++)
 			{
-				Approach::result r = solver.run_experimental(&setsMap->at("f"), &f, &x);
+				Approach::result r = solver.run_experimental(&setsMap->at(f), &f, &x);
 				Approach::display_result(&f, &r);
 				std::cout <<'\n' << x << '\n';
 			}
