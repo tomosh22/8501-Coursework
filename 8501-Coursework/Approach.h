@@ -15,9 +15,9 @@ public:
 		int d; //x
 		int e; //constant
 	};
-	virtual result run(std::vector<int>* input, const std::string* setName) = 0;
-	static void display_result(const std::string* setName, const result* result);
-	static std::string result_string(const std::string* setName, const result* result);
+	virtual result run(std::vector<int>* input) = 0;
+	static void display_result(const result* result);
+	static std::string result_string(const result* result);
 protected:
 	
 	int  factorial(int num);

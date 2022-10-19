@@ -1,5 +1,5 @@
 #include "Approach2.h"
-Approach::result Approach2::run(std::vector<int>* input, const std::string* setName) {
+Approach::result Approach2::run(std::vector<int>* input) {
 	int highorder = -1;
 	int leadCoeff = -1;
 	std::vector<int> set;
@@ -16,7 +16,7 @@ Approach::result Approach2::run(std::vector<int>* input, const std::string* setN
 	return r;
 }
 
-Approach::result Approach2::run_experimental(std::vector<int>* input, const std::string* setName, const int* xOffset) {
+Approach::result Approach2::run_experimental(std::vector<int>* input, const int* xOffset) {
 	int highorder = -1;
 	int leadCoeff = -1;
 	std::vector<int> set;

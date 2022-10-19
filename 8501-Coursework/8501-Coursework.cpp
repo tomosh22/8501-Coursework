@@ -156,7 +156,7 @@ void create_threads(std::map<std::string, std::vector<int>>* setsMap, std::vecto
 	for (std::pair<std::string, std::vector<int>> pair : *setsMap) {
 		auto func = [](std::pair<std::string, std::vector<int>> pair, std::map<std::string, Approach::result>* results, T* solver) {
 			
-			(*results)[pair.first] = solver->run(&pair.second, &pair.first);
+			(*results)[pair.first] = solver->run(&pair.second);
 		};
 		threads->push_back(std::thread(func, pair, results, solver));
 	}
@@ -170,7 +170,7 @@ void cli(std::map<std::string, std::vector<int>>* setsMap) {
 	char choice;
 	std::vector<std::thread> threads;
 	std::map<std::string, Approach::result> results;
-	Approach1 solver = Approach1();
+	Approach2 solver = Approach2();
 	while (true) {
 		std::cout << "1. create set\n2. read sets\n3. derive formula from set\n";
 		std::cin >> choice;
@@ -191,8 +191,8 @@ void cli(std::map<std::string, std::vector<int>>* setsMap) {
 			try {
 				std::ofstream file("expressions.csv", std::ios::out);
 				for (std::pair<std::string, Approach::result> pair : results) {
-					Approach::display_result(&pair.first, &pair.second);
-					file << ' ' << Approach::result_string(&pair.first, &pair.second);
+					Approach::display_result(&pair.second);
+					file << ' ' << Approach::result_string(&pair.second);
 					file << '\n';
 				}
 				file.close();
@@ -207,8 +207,8 @@ void cli(std::map<std::string, std::vector<int>>* setsMap) {
 			std::string f = "5";
 			for (int x = -50; x < 50; x++)
 			{
-				Approach::result r = solver.run_experimental(&setsMap->at(f), &f, &x);
-				Approach::display_result(&f, &r);
+				Approach::result r = solver.run_experimental(&setsMap->at(f), &x);
+				Approach::display_result(&r);
 				std::cout <<'\n' << x << '\n';
 			}
 			return;

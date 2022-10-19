@@ -42,7 +42,7 @@ int Approach1::determine_order(std::vector<int>* input, int* constantDifference)
 	return -1;
 }
 
-Approach::result Approach1::derive_function(const int* order, std::vector<int>* input, const int* constantDifference, const std::string* setName) {
+Approach::result Approach1::derive_function(const int* order, std::vector<int>* input, const int* constantDifference) {
 	Equation formula{};
 	std::array<std::array<Equation, 5>, 5> equations = std::array<std::array<Equation, 5>, 5>();
 	setup_equations(&equations, order,input);
@@ -81,12 +81,12 @@ Approach::result Approach1::derive_function(const int* order, std::vector<int>* 
 	return r;
 }
 
-Approach::result Approach1::run(std::vector<int>* input, const std::string* setName) {
+Approach::result Approach1::run(std::vector<int>* input) {
 	for (int x = 0; x < 21; x++)
 	{
 		int constantDifference = -1;
 		int order = determine_order(input, &constantDifference);
-		result r = derive_function(&order, input, &constantDifference, setName);
+		result r = derive_function(&order, input, &constantDifference);
 		if (order == -1) std::cout << "order not detected";
 		return r;
 	}
