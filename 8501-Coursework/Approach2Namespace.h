@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <string>
+#include <vector>
 namespace Approach2Namespace {
 	struct result {
 		int a; //x^4
@@ -9,7 +10,7 @@ namespace Approach2Namespace {
 		int d; //x
 		int e; //constant
 	};
-	result run(const std::array<int, 21 >* input, const std::string* setName);
+	result run(const std::vector<int>* input, const std::string* setName);
 	int factorial(int num);
 	void set_order_and_lead_coeff(const int* input, int* order, int* leadCoeff);
 }

@@ -2,6 +2,7 @@
 #include "Sets.h"
 #include <array>
 #include <string>
+#include <vector>
 namespace Approach1Namespace {
 	struct Equation {
 		int y; //from input
@@ -19,8 +20,8 @@ namespace Approach1Namespace {
 		int e; //constant
 	};
 	Equation operator-(const Equation lhs, const Equation rhs);
-	void run(std::array<int, 21 > *input, const std::string* setName);
+	void run(std::vector<int> *input, const std::string* setName);
 	int factorial(int num);
-	int determine_order(std::array<int, 21 >* input, int* constantDifference);
-	result derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference, const std::string* setName);
+	int determine_order(std::vector<int>* input, int* constantDifference);
+	result derive_function(const int* order, std::vector<int>* input, const int* constantDifference, const std::string* setName);
 }

@@ -38,27 +38,28 @@ void get_terms_from_user(int* terms, const std::map<int, char>* charMap) {
 
 void get_input_set_from_user(int* lower, int* upper) {
 	do {
-		std::cout << "range of input set must be 21 or less\n";
+		//std::cout << "range of input set must be 21 or less\n";
 		std::cout << "input value for lower bound of input set\n";
 		std::cin >> *lower;
 		std::cout << "input value for upper bound of input set\n";
 		std::cin >> *upper;
-	} while (*upper - *lower > 20);
+		//} while (*upper - *lower > 20);
+	} while (false);
 }
 
-void generate_set_from_input_set(int* values, const int* terms, const int* lower, const int* upper) {
+void generate_set_from_input_set(std::vector<int>* values, const int* terms, const int* lower, const int* upper) {
 	for (int x = *lower; x <= *upper; x++){
 		int value = terms[0] * (int)pow(x, 4)
 			+ terms[1] * (int)pow(x, 3)
 			+ terms[2] * (int)pow(x, 2)
 			+ terms[3] * x
 			+ terms[4];
-		values[x - *lower] = value;
+		values->push_back(value);
 		std::cout << value << ' ';
 	}
 }
 
-void write_set_to_file(const int* lower, const int* upper, const int* values) {
+void write_set_to_file(const int* lower, const int* upper, const std::vector<int>* values) {
 	char name[10]{};
 	std::cout << "input set name (max 10 chars)\n";
 	std::cin >> name;
@@ -68,7 +69,7 @@ void write_set_to_file(const int* lower, const int* upper, const int* values) {
 		file << name;
 		for (int x = *lower; x <= *upper; x++)
 		{
-			file << ',' << values[x - *lower];
+			file << ',' << values->at(x - *lower);
 		}
 		file << '\n';
 		file.close();
@@ -85,9 +86,9 @@ void create_set() {
 	get_terms_from_user(terms, &charMap);
 	int lower = 0;
 	int upper = 0;
-	int values[21];
+	std::vector<int> values;
 	get_input_set_from_user(&lower,&upper);
-	generate_set_from_input_set(values, terms, &lower, &upper);
+	generate_set_from_input_set(&values, terms, &lower, &upper);
 	
 	std::cout << '\n';
 	std::cout << "output to file? Y : N\n";
@@ -95,16 +96,16 @@ void create_set() {
 	std::cin >> choice;
 	
 	if (choice == 'Y' || choice == 'y') {
-		write_set_to_file(&lower, &upper, values);
+		write_set_to_file(&lower, &upper, &values);
 	}
 	
 	
 	return;
 }
 
-void handle_new_line(int* valueIndex, int* setIndex, bool* nameFound, std::string* setName, char* value, std::map<std::string, std::array<int, 21>>* setsMap) {
+void handle_new_line(int* valueIndex, int* setIndex, bool* nameFound, std::string* setName, char* value, std::map<std::string, std::vector<int>>* setsMap) {
 	*valueIndex = 0;
-	setsMap->at(*setName).at(*setIndex) = std::stoi(value);
+	(*setsMap)[*setName].push_back(std::stoi(value));
 	for (int x = 0; x < 10; x++) {
 		value[x] = '\0';
 	}
@@ -114,15 +115,15 @@ void handle_new_line(int* valueIndex, int* setIndex, bool* nameFound, std::strin
 	return;
 }
 
-void handle_new_value(int* valueIndex, int* setIndex, std::string* setName, char* value, std::map<std::string, std::array<int, 21>>* setsMap) {
+void handle_new_value(int* valueIndex, int* setIndex, std::string* setName, char* value, std::map<std::string, std::vector<int>>* setsMap) {
 	*valueIndex = 0;
-	(*setsMap)[*setName][(*setIndex)++] = std::stoi(value);
+	(*setsMap)[*setName].push_back(std::stoi(value));
 	for (int x = 0; x < 10; x++) {
 		value[x] = '\0';
 	}
 }
 
-void read_sets(std::map<std::string, std::array<int,21>>* setsMap) {
+void read_sets(std::map<std::string, std::vector<int>>* setsMap) {
 	std::ifstream file("sets.csv", std::ios::in);
 	std::map<std::string, int*> readSets;
 	std::string line;
@@ -164,9 +165,9 @@ void read_sets(std::map<std::string, std::array<int,21>>* setsMap) {
 }
 
 template <typename T>
-void create_threads(std::map<std::string, std::array<int, 21>>* setsMap, std::vector<std::thread>* threads, std::map<std::string, Approach::result>* results, T* solver) {
-	for (std::pair<std::string, std::array<int, 21>> pair : *setsMap) {
-		auto func = [](std::pair<std::string, std::array<int, 21>> pair, std::map<std::string, Approach::result>* results, T* solver) {
+void create_threads(std::map<std::string, std::vector<int>>* setsMap, std::vector<std::thread>* threads, std::map<std::string, Approach::result>* results, T* solver) {
+	for (std::pair<std::string, std::vector<int>> pair : *setsMap) {
+		auto func = [](std::pair<std::string, std::vector<int>> pair, std::map<std::string, Approach::result>* results, T* solver) {
 			
 			(*results)[pair.first] = solver->run(&pair.second, &pair.first);
 		};
@@ -178,11 +179,11 @@ void create_threads(std::map<std::string, std::array<int, 21>>* setsMap, std::ve
 	}
 }
 
-void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
+void cli(std::map<std::string, std::vector<int>>* setsMap) {
 	char choice;
 	std::vector<std::thread> threads;
 	std::map<std::string, Approach::result> results;
-	Approach2 solver = Approach2();
+	Approach1 solver = Approach1();
 	while (true) {
 		std::cout << "1. create set\n2. read sets\n3. derive formula from set\n";
 		std::cin >> choice;
@@ -232,7 +233,7 @@ void cli(std::map<std::string, std::array<int, 21>>* setsMap) {
 
 int main()
 {
-	std::map<std::string, std::array<int, 21>> setsMap;
+	std::map<std::string, std::vector<int>> setsMap;
 	cli(&setsMap);
 	read_sets(&setsMap);
 	std::map<int, std::string> charMap{{0,"a"},{1,"b"},{2,"c"},	{3,"d"},{4,"e"},{5,"f"} };
@@ -240,9 +241,9 @@ int main()
 	for (int x = 2; x < 3; x++)
 	{
 		Approach1 solver = Approach1();
-		std::array<int, 21 >* input = &(setsMap.at(charMap.at(x)));
+		std::vector<int>* input = &(setsMap.at(charMap.at(x)));
 		std::string* setName = &charMap.at(x);
-		auto func = [](std::array<int, 21 >* input, std::string* setName, Approach1 solver) {
+		auto func = [](std::vector<int>* input, std::string* setName, Approach1 solver) {
 			solver.run(input,setName);
 		};
 		std::cout << "starting thread " << x << '\n';

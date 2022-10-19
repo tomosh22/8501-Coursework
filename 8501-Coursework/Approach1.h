@@ -11,11 +11,11 @@ public:
 		int d; //x
 		int e; //constant
 	};
-	result run(std::array<int, 21 >* input, const std::string* setName);
+	result run(std::vector<int>* input, const std::string* setName);
 protected:
-	int determine_order(std::array<int, 21 >* input, int* constantDifference);
-	result derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference, const std::string* setName);
-	void setup_equations(std::array<std::array<Equation, 5>, 5>* equations, const int* order, const std::array<int, 21>* input);
+	int determine_order(std::vector<int>* input, int* constantDifference);
+	result derive_function(const int* order, std::vector<int>* input, const int* constantDifference, const std::string* setName);
+	void setup_equations(std::array<std::array<Equation, 5>, 5>* equations, const int* order, const std::vector<int>* input);
 	void setup_coeffs(const int* order, const int* firstCoeff, int* terms);
 	//Equation operator-(const Equation lhs, const Equation rhs);
 };

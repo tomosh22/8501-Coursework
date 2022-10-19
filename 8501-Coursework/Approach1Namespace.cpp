@@ -17,7 +17,7 @@ namespace Approach1Namespace {
 		if (num <= 1) { return 1; }
 		return num * factorial(num - 1);
 	}
-	result derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference, const std::string* setName) {
+	result derive_function(const int* order, std::vector<int>* input, const int* constantDifference, const std::string* setName) {
 		Equation formula{};
 		Equation equations[5][5] = {};
 		//todo change this to start at index 0 to reduce required number of inputs
@@ -71,7 +71,7 @@ namespace Approach1Namespace {
 		result r{ a,b,c,d,e };
 		return r;
 	}
-	int determine_order(std::array<int, 21 > *input, int* constantDifference) {
+	int determine_order(std::vector<int> *input, int* constantDifference) {
 		int first[5]{};
 		int second[4]{};
 		int third[3]{};
@@ -94,7 +94,7 @@ namespace Approach1Namespace {
 		if (third[1] - third[0] == third[2] - third[1]) { *constantDifference = third[1] - third[0]; return 4; }
 		return -1;
 	}
-	void run(std::array<int, 21 > *input, const std::string* setName) {
+	void run(std::vector<int> *input, const std::string* setName) {
 		//while true(){}
 		for (int x = 0; x < 21; x++)
 		{

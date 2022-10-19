@@ -1,9 +1,10 @@
 #include "Approach2Namespace.h"
 #include <iostream>
 #include <math.h>
+
 namespace Approach2Namespace {
 	
-	result run(const std::array<int, 21 >* input, const std::string* setName) {
+	result run(const std::vector<int>* input, const std::string* setName) {
 		int highorder = -1;
 		int leadCoeff = -1;
 		int set[20];

@@ -18,7 +18,7 @@ Approach1::Equation operator *(Approach1::Equation lhs, const int* rhs) {
 	lhs.e *= rhs[4];
 	return lhs;
 }
-int Approach1::determine_order(std::array<int, 21 >* input, int* constantDifference) {
+int Approach1::determine_order(std::vector<int>* input, int* constantDifference) {
 	int first[5]{};
 	int second[4]{};
 	int third[3]{};
@@ -42,7 +42,7 @@ int Approach1::determine_order(std::array<int, 21 >* input, int* constantDiffere
 	return -1;
 }
 
-Approach::result Approach1::derive_function(const int* order, std::array<int, 21 >* input, const int* constantDifference, const std::string* setName) {
+Approach::result Approach1::derive_function(const int* order, std::vector<int>* input, const int* constantDifference, const std::string* setName) {
 	Equation formula{};
 	std::array<std::array<Equation, 5>, 5> equations = std::array<std::array<Equation, 5>, 5>();
 	setup_equations(&equations, order,input);
@@ -81,7 +81,7 @@ Approach::result Approach1::derive_function(const int* order, std::array<int, 21
 	return r;
 }
 
-Approach::result Approach1::run(std::array<int, 21 >* input, const std::string* setName) {
+Approach::result Approach1::run(std::vector<int>* input, const std::string* setName) {
 	for (int x = 0; x < 21; x++)
 	{
 		int constantDifference = -1;
@@ -92,7 +92,7 @@ Approach::result Approach1::run(std::array<int, 21 >* input, const std::string* 
 	}
 }
 
-void Approach1::setup_equations(std::array<std::array<Equation, 5>, 5>* equations, const int* order, const std::array<int,21>* input) {
+void Approach1::setup_equations(std::array<std::array<Equation, 5>, 5>* equations, const int* order, const std::vector<int>* input) {
 	for (int x = 0; x < (*order) + 1; x++)
 	{
 		equations->at(0).at(x).y = input->at(x);

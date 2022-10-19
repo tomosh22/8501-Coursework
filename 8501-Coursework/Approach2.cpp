@@ -1,33 +1,33 @@
 #include "Approach2.h"
-Approach::result Approach2::run(std::array<int, 21 >* input, const std::string* setName) {
+Approach::result Approach2::run(std::vector<int>* input, const std::string* setName) {
 	int highorder = -1;
 	int leadCoeff = -1;
-	int set[20];
-	for (int x = 0; x < 20; x++)
+	std::vector<int> set;
+	for (int x = 0; x < input->size(); x++)
 	{
-		set[x] = input->at(x);
+		set.push_back(input->at(x));
 	}
 	int terms[5]{};
-	calculate_order_and_lead_coeff(set, &highorder, &leadCoeff);
+	calculate_order_and_lead_coeff(&set, &highorder, &leadCoeff);
 	terms[4 - highorder] = leadCoeff;
-	calculate_remaining_coeffs(terms, &highorder, set);
+	calculate_remaining_coeffs(terms, &highorder, &set);
 	//display_result(setName, terms);
 	result r{ terms[0],terms[1],terms[2],terms[3],terms[4] };
 	return r;
 }
 
-Approach::result Approach2::run_experimental(std::array<int, 21 >* input, const std::string* setName, const int* xOffset) {
+Approach::result Approach2::run_experimental(std::vector<int>* input, const std::string* setName, const int* xOffset) {
 	int highorder = -1;
 	int leadCoeff = -1;
-	int set[20];
-	for (int x = 0; x < 20; x++)
+	std::vector<int> set;
+	for (int x = 0; x < input->size(); x++)
 	{
-		set[x] = input->at(x);
+		set.push_back(input->at(x));
 	}
 	int terms[5]{};
-	calculate_order_and_lead_coeff(set, &highorder, &leadCoeff);
+	calculate_order_and_lead_coeff(&set, &highorder, &leadCoeff);
 	terms[4 - highorder] = leadCoeff;
-	calculate_remaining_coeffs_experimental(terms, &highorder, set, xOffset);
+	calculate_remaining_coeffs_experimental(terms, &highorder, &set, xOffset);
 	//display_result(setName, terms);
 	result r{ terms[0],terms[1],terms[2],terms[3],terms[4] };
 	return r;
@@ -35,10 +35,10 @@ Approach::result Approach2::run_experimental(std::array<int, 21 >* input, const 
 
 
 
-void Approach2::calculate_order_and_lead_coeff(const int* input, int* order, int* leadCoeff) {
+void Approach2::calculate_order_and_lead_coeff(const std::vector<int>* input, int* order, int* leadCoeff) {
 	int values[5][5]{};
 	for (int x = 0; x < 5; x++){
-		values[0][x] = input[x];
+		values[0][x] = input->at(x);
 	}
 	int constantDifference = 0;
 	int currentOrder = 1;
@@ -55,13 +55,13 @@ void Approach2::calculate_order_and_lead_coeff(const int* input, int* order, int
 	}
 }
 
-void Approach2::calculate_remaining_coeffs(int* terms, const int* highorder, int* set) {
+void Approach2::calculate_remaining_coeffs(int* terms, const int* highorder, std::vector<int>* set) {
 	
 	int values[4][4]{};
 	for (int order = *highorder; order > 0; order--) {
 		for (int x = 0; x < order + 1; x++) {
-			set[x] -= terms[4 - order] * pow(x, order);
-			values[0][x] = set[x];
+			set->at(x) -= terms[4 - order] * pow(x, order);
+			values[0][x] = set->at(x);
 		}
 		for (int x = 1; x < order; x++) {
 			for (int y = 0; y < 4 - x; y++) {
@@ -72,13 +72,13 @@ void Approach2::calculate_remaining_coeffs(int* terms, const int* highorder, int
 	}
 }
 
-void Approach2::calculate_remaining_coeffs_experimental(int* terms, const int* highorder, int* set, const int* xOffset) {
+void Approach2::calculate_remaining_coeffs_experimental(int* terms, const int* highorder, std::vector<int>* set, const int* xOffset) {
 
 	int values[4][4]{};
 	for (int order = *highorder; order > 0; order--) {
 		for (int x = 0; x < order + 1; x++) {
-			set[x] -= terms[4 - order] * pow(x+*xOffset, order);
-			values[0][x] = set[x];
+			set->at(x) -= terms[4 - order] * pow(x+*xOffset, order);
+			values[0][x] = set->at(x);
 		}
 		for (int x = 1; x < order; x++) {
 			for (int y = 0; y < 4 - x; y++) {

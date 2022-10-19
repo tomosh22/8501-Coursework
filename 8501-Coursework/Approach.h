@@ -2,6 +2,7 @@
 #include <array>
 #include <string>
 #include <iostream>
+#include <vector>
 class Approach {
 public:
 	Approach() {};
@@ -14,7 +15,7 @@ public:
 		int d; //x
 		int e; //constant
 	};
-	virtual result run(std::array<int, 21 >* input, const std::string* setName) = 0;
+	virtual result run(std::vector<int>* input, const std::string* setName) = 0;
 	static void display_result(const std::string* setName, const result* result);
 	static std::string result_string(const std::string* setName, const result* result);
 protected:
