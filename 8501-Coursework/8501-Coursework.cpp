@@ -2,7 +2,6 @@
 #include "Approach1Namespace.h"
 #include "Approach2Namespace.h"
 #include "Sets.h"
-//#include <windows.h>
 #include <thread>
 #include <map>
 #include <string>
@@ -26,25 +25,17 @@ std::map<int, char> create_char_map() {
 }
 
 void get_terms_from_user(int* terms, const std::map<int, char>* charMap) {
-	for (int x = 0; x < 5; x++)
-	{
-		do {
-			std::cout << "input value from 0-9 for " << charMap->at(x) << '\n';
-			std::cin >> terms[x];
-			//} while (terms[x] > 9);
-		} while (false);
+	for (int x = 0; x < 5; x++){
+		std::cout << "input value from 0-9 for " << charMap->at(x) << '\n';
+		std::cin >> terms[x];
 	}
 }
 
 void get_input_set_from_user(int* lower, int* upper) {
-	do {
-		//std::cout << "range of input set must be 21 or less\n";
-		std::cout << "input value for lower bound of input set\n";
-		std::cin >> *lower;
-		std::cout << "input value for upper bound of input set\n";
-		std::cin >> *upper;
-		//} while (*upper - *lower > 20);
-	} while (false);
+	std::cout << "input value for lower bound of input set\n";
+	std::cin >> *lower;
+	std::cout << "input value for upper bound of input set\n";
+	std::cin >> *upper;
 }
 
 void generate_set_from_input_set(std::vector<int>* values, const int* terms, const int* lower, const int* upper) {
@@ -63,8 +54,7 @@ void write_set_to_file(const std::vector<int>* values) {
 	try {
 		std::ofstream file("sets.csv", std::ios::app);
 		file << values->at(0);
-		for (int x = 0; x <= values->size(); x++)
-		{
+		for (int x = 0; x <= values->size(); x++){
 			file << ',' << values->at(x);
 		}
 		file << '\n';
@@ -85,24 +75,20 @@ void create_set() {
 	std::vector<int> values;
 	get_input_set_from_user(&lower,&upper);
 	generate_set_from_input_set(&values, terms, &lower, &upper);
-	
 	std::cout << '\n';
 	std::cout << "output to file? Y : N\n";
 	char choice;
 	std::cin >> choice;
-	
 	if (choice == 'Y' || choice == 'y') {
 		write_set_to_file(&values);
 	}
-	
-	
 	return;
 }
 
 void handle_new_line(int* valueIndex, int* setIndex, char* value, std::vector<std::vector<int>>* sets, int* mapIndex) {
 	*valueIndex = 0;
 	sets->at(*(mapIndex)).push_back(std::stoi(value));
-	for (int x = 0; x < 10; x++) {
+	for (int x = 0; x < 9; x++) {
 		value[x] = '\0';
 	}
 	*setIndex = 0;
@@ -112,9 +98,9 @@ void handle_new_line(int* valueIndex, int* setIndex, char* value, std::vector<st
 
 void handle_new_value(int* valueIndex, int* setIndex,  char* value, std::vector<std::vector<int>>* sets, int* mapIndex) {
 	*valueIndex = 0;
-	if (sets->size() < (*mapIndex)+1)sets->push_back(std::vector<int>());
+	if (sets->size() < (*mapIndex)+1) sets->push_back(std::vector<int>());
 	sets->at(*(mapIndex)).push_back(std::stoi(value));
-	for (int x = 0; x < 10; x++) {
+	for (int x = 0; x < 9; x++) {
 		value[x] = '\0';
 	}
 }
@@ -124,25 +110,29 @@ void read_sets(std::vector<std::vector<int>>* sets) {
 	std::map<std::string, int*> readSets;
 	std::string line;
 	char chr;
-	char value[10]{};//can only read integers up to 9999999999
+	char value[9]{};//can only read integers up to 999999999
 	int valueIndex = 0;
 	int setIndex = 0;
 	int mapIndex = 0;
 	try {
 		if (!file.is_open()) throw std::ifstream::failure("Error reading file");
 		while (file.get(chr)) {
-				if (chr == '\n') {
-					handle_new_line(&valueIndex, &setIndex, value, sets, &mapIndex);
+			if (valueIndex >= 9) {
+				std::cout << "error: value greater than 999999999\n";
+				return;
+			}
+			if (chr == '\n') {
+				handle_new_line(&valueIndex, &setIndex, value, sets, &mapIndex);
+				continue;
+			}
+			else {
+				if (chr == ',') {
+					handle_new_value(&valueIndex, &setIndex, value, sets, &mapIndex);
 					continue;
 				}
-				else {
-					if (chr == ',') {
-						handle_new_value(&valueIndex, &setIndex, value, sets, &mapIndex);
-						continue;
-					}
-					else { value[valueIndex++] = chr; }
-				}
+				else { value[valueIndex++] = chr; }
 			}
+		}
 	}
 	catch (const std::ios_base::failure& e) {
 		std::cout << e.what() << "\nSpace - Enter to continue";
