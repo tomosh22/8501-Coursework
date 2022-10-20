@@ -143,11 +143,14 @@ void read_sets(std::vector<std::vector<int>>* sets) {
 }
 
 template <typename T>
-void create_threads(std::vector<std::vector<int>>* sets, std::vector<std::thread>* threads, std::map<int, Approach::result>* results, T* solver) {
+void create_threads(std::vector<std::vector<int>>* sets, std::vector<std::thread>* threads, std::vector<Approach::result>* results, T* solver) {
 	for (int x = 0; x < sets->size(); x++) {
-		auto func = [](std::vector<int>* set, std::map<int, Approach::result>* results, T* solver, int x) {
+		results->push_back({});
+	}
+	for (int x = 0; x < sets->size(); x++) {
+		auto func = [](std::vector<int>* set, std::vector<Approach::result>* results, T* solver, int x) {
 			Approach::result r = solver->run(set);
-			results->insert({ x,r });
+			results->at(x) = r;
 		};
 		threads->push_back(std::thread(func, &sets->at(x), results, solver,x));
 	}
@@ -158,12 +161,12 @@ void create_threads(std::vector<std::vector<int>>* sets, std::vector<std::thread
 	threads->clear();
 }
 
-void write_expressions_to_file(const std::map<int, Approach::result>* results) {
+void write_expressions_to_file(const std::vector<Approach::result>* results) {
 	try {
 		std::ofstream file("expressions.csv", std::ios::out);
-		for (std::pair<int, Approach::result> const& pair : *results) {
-			Approach::display_result(&pair.second);
-			file << ' ' << Approach::result_string(&pair.second);
+		for (int x = 0; x < results->size();x++) {
+			Approach::display_result(&results->at(x));
+			file << ' ' << Approach::result_string(&results->at(x));
 			file << '\n';
 		}
 		file.close();
@@ -176,7 +179,7 @@ void write_expressions_to_file(const std::map<int, Approach::result>* results) {
 void cli(std::vector<std::vector<int>>* sets) {
 	char choice;
 	std::vector<std::thread> threads;
-	std::map<int, Approach::result> results;
+	std::vector<Approach::result> results;
 	Approach1 solver = Approach1();
 	while (true) {
 		std::cout << "1. create set\n2. read sets\n3. derive formula from set\n";
