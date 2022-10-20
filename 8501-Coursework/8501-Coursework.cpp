@@ -165,6 +165,22 @@ void create_threads(std::vector<std::vector<int>>* sets, std::vector<std::thread
 	{
 		thread.join();
 	}
+	threads->clear();
+}
+
+void write_expressions_to_file(const std::map<int, Approach::result>* results) {
+	try {
+		std::ofstream file("expressions.csv", std::ios::out);
+		for (std::pair<int, Approach::result> const& pair : *results) {
+			Approach::display_result(&pair.second);
+			file << ' ' << Approach::result_string(&pair.second);
+			file << '\n';
+		}
+		file.close();
+	}
+	catch (std::ofstream::failure e) {
+		std::cout << e.what();
+	}
 }
 
 void cli(std::vector<std::vector<int>>* sets) {
@@ -196,20 +212,7 @@ void cli(std::vector<std::vector<int>>* sets) {
 			}
 			system("CLS");
 			create_threads(sets, &threads, &results, &solver);
-			threads.clear();
-			try {
-				std::ofstream file("expressions.csv", std::ios::out);
-				for (std::pair<int, Approach::result> const& pair : results) {
-					Approach::display_result(&pair.second);
-					file << ' ' << Approach::result_string(&pair.second);
-					file << '\n';
-				}
-				file.close();
-			}
-			catch (std::ofstream::failure e) {
-				std::cout << e.what();
-			}
-			
+			write_expressions_to_file(&results);
 			break;
 		case '4':
 			Approach2 solver = Approach2();
