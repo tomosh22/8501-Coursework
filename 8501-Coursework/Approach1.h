@@ -11,7 +11,7 @@ public:
 		int d; //x
 		int e; //constant
 	};
-	result run(std::vector<int>* input);
+	virtual result run(std::vector<int>* input) override;
 protected:
 	int determine_order(std::vector<int>* input, int* constantDifference);
 	result derive_function(const int* order, std::vector<int>* input, const int* constantDifference);

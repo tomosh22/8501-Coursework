@@ -3,7 +3,7 @@
 #include <iostream>
 class Approach2 : public Approach {
 public:
-	result run(std::vector<int>* input);
+	virtual result run(std::vector<int>* input) override;
 	result run_experimental(std::vector<int>* input, const int* xOffset);
 protected:
 	void calculate_order_and_lead_coeff(const std::vector<int>* input, int* order, int* leadCoeff);

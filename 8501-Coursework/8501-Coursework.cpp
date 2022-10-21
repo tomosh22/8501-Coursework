@@ -25,17 +25,50 @@ std::map<int, char> create_char_map() {
 }
 
 void get_terms_from_user(int* terms, const std::map<int, char>* charMap) {
+	std::string input = "";
 	for (int x = 0; x < 5; x++){
-		std::cout << "input value from 0-9 for " << charMap->at(x) << '\n';
-		std::cin >> terms[x];
+		do {
+			std::cout << "input value for " << charMap->at(x) << '\n';
+			std::cin >> input;
+			for (const char& c : input) {
+				if (!std::isdigit(c)) {
+					continue;
+				}
+			}
+			break;
+		} while (true);
+		terms[x] = std::stoi(input);
 	}
 }
 
 void get_input_set_from_user(int* lower, int* upper) {
-	std::cout << "input value for lower bound of input set\n";
-	std::cin >> *lower;
-	std::cout << "input value for upper bound of input set\n";
-	std::cin >> *upper;
+	std::string input;
+	bool isNumber;
+	do {
+		std::cout << "input value for lower bound of input set\n";
+		std::cin >> input;
+		for (const char& c : input) {
+			if (!std::isdigit(c)) {
+				continue;
+			}
+		}
+		break;
+	} while (true);
+	*lower = std::stoi(input);
+	do {
+		std::cout << "input value for upper bound of input set (must be greater than " << *lower << ")\n";
+		std::cin >> input;
+		for (char const& c : input) {
+			if (!std::isdigit(c)) {
+				continue;
+			}
+		}
+		if (std::stoi(input) > *lower) {
+			break;
+		}
+		
+	} while (true);
+	*upper = std::stoi(input);
 }
 
 void generate_set_from_input_set(std::vector<int>* values, const int* terms, const int* lower, const int* upper) {
@@ -54,7 +87,7 @@ void write_set_to_file(const std::vector<int>* values) {
 	try {
 		std::ofstream file("sets.csv", std::ios::app);
 		file << values->at(0);
-		for (int x = 0; x <= values->size(); x++){
+		for (int x = 1; x < values->size(); x++){
 			file << ',' << values->at(x);
 		}
 		file << '\n';
@@ -154,8 +187,7 @@ void create_threads(std::vector<std::vector<int>>* sets, std::vector<std::thread
 		};
 		threads->push_back(std::thread(func, &sets->at(x), results, solver,x));
 	}
-	for (std::thread& thread : *threads)
-	{
+	for (std::thread& thread : *threads){
 		thread.join();
 	}
 	threads->clear();
@@ -176,16 +208,34 @@ void write_expressions_to_file(const std::vector<Approach::result>* results) {
 	}
 }
 
+Approach* get_approach_from_user() {
+	char input;
+	do {
+		std::cout << "1 for Approach1\n2 for Approach2\n";
+		std::cin >> input;
+	} while (input != '1' && input != '2');
+	return (input == '1') ? (Approach*)(new Approach1()) : (Approach*)(new Approach2());
+}
+
+void experimental(std::vector<std::vector<int>>* sets) {
+	Approach2 solver = Approach2();
+	std::string f = "5";
+	for (int x = -50; x < 50; x++) {
+		Approach::result r = solver.run_experimental(&sets->at(5), &x);
+		Approach::display_result(&r);
+		std::cout << '\n' << x << '\n';
+	}
+}
+
 void cli(std::vector<std::vector<int>>* sets) {
 	char choice;
 	std::vector<std::thread> threads;
 	std::vector<Approach::result> results;
-	Approach1 solver = Approach1();
+	Approach* solver = get_approach_from_user();
 	while (true) {
 		std::cout << "1. create set\n2. read sets\n3. derive formula from set\n";
 		std::cin >> choice;
-		switch (choice)
-		{
+		switch (choice){
 		case '1':
 			system("CLS");
 			create_set();
@@ -195,7 +245,6 @@ void cli(std::vector<std::vector<int>>* sets) {
 			read_sets(sets);
 			break;
 		case '3':
-			
 			if (sets->size() == 0) {
 				system("CLS");
 				std::cout << "no sets read\nSpace - Enter to continue";
@@ -204,19 +253,15 @@ void cli(std::vector<std::vector<int>>* sets) {
 				break;
 			}
 			system("CLS");
-			create_threads(sets, &threads, &results, &solver);
+			create_threads(sets, &threads, &results, solver);
 			write_expressions_to_file(&results);
 			break;
 		case '4':
-			Approach2 solver = Approach2();
-			std::string f = "5";
-			for (int x = -50; x < 50; x++)
-			{
-				Approach::result r = solver.run_experimental(&sets->at(5), &x);
-				Approach::display_result(&r);
-				std::cout <<'\n' << x << '\n';
-			}
+			experimental(sets);
 			return;
+		default:
+			system("CLS");
+			break;
 		}
 	}
 }
@@ -226,7 +271,6 @@ int main()
 {
 	std::vector<std::vector<int>> sets;
 	cli(&sets);
-	
 	return 0;
 }
 
