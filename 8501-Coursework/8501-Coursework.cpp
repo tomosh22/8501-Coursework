@@ -22,6 +22,15 @@ std::map<int, char> create_char_map() {
 	return charMap;
 }
 
+bool string_is_number(std::string* input) {
+	for (char const& c : *input) {
+		if (!std::isdigit(c)) {
+			return false;
+		}
+	}
+	return true;
+}
+
 void get_terms_from_user(int* terms, const std::map<int, char>* charMap) {
 	std::string input;
 	for (int x = 0; x < 5; x++){
@@ -35,14 +44,7 @@ void get_terms_from_user(int* terms, const std::map<int, char>* charMap) {
 	}
 }
 
-bool string_is_number(std::string* input) {
-	for (char const& c : *input) {
-		if (!std::isdigit(c)) {
-			return false;
-		}
-	}
-	return true;
-}
+
 
 void get_lower_bound_from_user(int* lower, std::string* input) {
 	bool isNumber;
@@ -103,8 +105,7 @@ void create_set() {
 	int terms[5];
 	std::map<int, char> charMap = create_char_map();
 	get_terms_from_user(terms, &charMap);
-	int lower = 0;
-	int upper = 0;
+	int lower,upper;
 	std::vector<int> values;
 	get_input_set_from_user(&lower,&upper);
 	generate_set_from_input_set(&values, terms, &lower, &upper);
