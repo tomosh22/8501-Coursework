@@ -1,6 +1,4 @@
 #include <iostream>
-#include "Approach1Namespace.h"
-#include "Approach2Namespace.h"
 #include "Sets.h"
 #include <thread>
 #include <map>

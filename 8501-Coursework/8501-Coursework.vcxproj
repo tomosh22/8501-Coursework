@@ -142,17 +142,13 @@
     <ClCompile Include="8501-Coursework.cpp" />
     <ClCompile Include="Approach.cpp" />
     <ClCompile Include="Approach1.cpp" />
-    <ClCompile Include="Approach1Namespace.cpp" />
     <ClCompile Include="Approach2.cpp" />
-    <ClCompile Include="Approach2Namespace.cpp" />
     <ClCompile Include="Sets.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Approach.h" />
     <ClInclude Include="Approach1.h" />
-    <ClInclude Include="Approach1Namespace.h" />
     <ClInclude Include="Approach2.h" />
-    <ClInclude Include="Approach2Namespace.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="Sets.h" />
   </ItemGroup>
