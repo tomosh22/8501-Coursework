@@ -27,7 +27,7 @@ std::map<int, char> create_char_map() {
 bool string_is_number(std::string* input) {
 	bool firstChar = true;
 	for (char const& c : *input) {
-		if (c == '-' && firstChar) {continue; }
+		if (c == '-' && firstChar) { firstChar = false; continue; }
 		firstChar = false;
 		if (!std::isdigit(c) && !firstChar) {
 			return false;
