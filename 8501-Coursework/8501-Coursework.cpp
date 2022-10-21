@@ -218,18 +218,17 @@ Approach* get_approach_from_user() {
 
 void experimental(std::vector<std::vector<int>>* sets) {
 	Approach2 solver = Approach2();
-	float x = -50;
-	float zero = 0;
+	float x = 0;
 	while (x < 50) {
 		Approach2::resultExperimental r = solver.run_experimental(&sets->at(5), &x);
 		//std::cout << x << '\n';
-		if (std::fabsf(r.d) <= 9 && std::fabsf(r.e) <= 1000) {
+		if (std::fabsf(r.d) <= 10 && std::fabsf(r.e) <= 1010) {
 			std::cout << x << '\n';
 			Approach2::display_result_experimental(&r);
 			std::cout << '\n';
 		}
 		//x = std::nextafterf(x, FLT_MAX);
-		x += (float)1 / 4096;
+		x += (float)1 / 512;
 		//break;
 	}
 	std::cout << "done";
