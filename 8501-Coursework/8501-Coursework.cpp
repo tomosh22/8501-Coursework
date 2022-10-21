@@ -25,8 +25,11 @@ std::map<int, char> create_char_map() {
 }
 
 bool string_is_number(std::string* input) {
+	bool firstChar = true;
 	for (char const& c : *input) {
-		if (!std::isdigit(c)) {
+		if (c == '-' && firstChar) {continue; }
+		firstChar = false;
+		if (!std::isdigit(c) && !firstChar) {
 			return false;
 		}
 	}
@@ -215,32 +218,21 @@ Approach* get_approach_from_user() {
 
 void experimental(std::vector<std::vector<int>>* sets) {
 	Approach2 solver = Approach2();
-	std::string f = "5";
-	float x = 6;
-	//std::cout << x << std::endl;
-	while (x < 8) {
-		Approach::result r = solver.run_experimental(&sets->at(5), &x);
+	float x = -50;
+	float zero = 0;
+	while (x < 50) {
+		Approach2::resultExperimental r = solver.run_experimental(&sets->at(5), &x);
 		//std::cout << x << '\n';
-		if (std::abs(r.d) < 9 && std::abs(r.e) < 1000) {
+		if (std::fabsf(r.d) <= 9 && std::fabsf(r.e) <= 1000) {
 			std::cout << x << '\n';
-			Approach::display_result(&r);
+			Approach2::display_result_experimental(&r);
 			std::cout << '\n';
 		}
 		//x = std::nextafterf(x, FLT_MAX);
-
 		x += (float)1 / 4096;
+		//break;
 	}
-	/*for (float x = 6; x < 8; x+= std::numeric_limits<float>::min()) {
-		Approach::result r = solver.run_experimental(&sets->at(5), &x);
-		
-		if( std::abs(r.d) < 9 && std::abs(r.e) < 1000){
-			std::cout << x << '\n';
-			Approach::display_result(&r);
-			std::cout << '\n';
-		}
-		
-		
-	}*/
+	std::cout << "done";
 }
 
 void cli(std::vector<std::vector<int>>* sets) {
