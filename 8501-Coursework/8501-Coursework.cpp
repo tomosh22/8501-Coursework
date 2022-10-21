@@ -23,50 +23,52 @@ std::map<int, char> create_char_map() {
 }
 
 void get_terms_from_user(int* terms, const std::map<int, char>* charMap) {
-	std::string input = "";
+	std::string input;
 	for (int x = 0; x < 5; x++){
-		do {
+		while(true) {
 			std::cout << "input value for " << charMap->at(x) << '\n';
 			std::cin >> input;
-			for (const char& c : input) {
-				if (!std::isdigit(c)) {
-					continue;
-				}
-			}
+			if (!string_is_number(&input))continue;
 			break;
-		} while (true);
+		}
 		terms[x] = std::stoi(input);
 	}
 }
 
+bool string_is_number(std::string* input) {
+	for (char const& c : *input) {
+		if (!std::isdigit(c)) {
+			return false;
+		}
+	}
+	return true;
+}
+
+void get_lower_bound_from_user(int* lower, std::string* input) {
+	bool isNumber;
+	while(true) {
+		std::cout << "input value for lower bound of input set\n";
+		std::cin >> *input;
+		if (!string_is_number(input))continue;
+		break;
+	}
+	*lower = std::stoi(*input);
+}
+
+void get_upper_bound_from_user(int* upper, int* lower, std::string* input) {
+	while(true){
+		std::cout << "input value for upper bound of input set (must be greater than " << *lower << ")\n";
+		std::cin >> *input;
+		if (!string_is_number(input))continue;
+		if (std::stoi(*input) > *lower)break;
+	}
+	*upper = std::stoi(*input);
+}
+
 void get_input_set_from_user(int* lower, int* upper) {
 	std::string input;
-	bool isNumber;
-	do {
-		std::cout << "input value for lower bound of input set\n";
-		std::cin >> input;
-		for (const char& c : input) {
-			if (!std::isdigit(c)) {
-				continue;
-			}
-		}
-		break;
-	} while (true);
-	*lower = std::stoi(input);
-	do {
-		std::cout << "input value for upper bound of input set (must be greater than " << *lower << ")\n";
-		std::cin >> input;
-		for (char const& c : input) {
-			if (!std::isdigit(c)) {
-				continue;
-			}
-		}
-		if (std::stoi(input) > *lower) {
-			break;
-		}
-		
-	} while (true);
-	*upper = std::stoi(input);
+	get_lower_bound_from_user(lower, &input);
+	get_upper_bound_from_user(upper, lower, &input);
 }
 
 void generate_set_from_input_set(std::vector<int>* values, const int* terms, const int* lower, const int* upper) {
