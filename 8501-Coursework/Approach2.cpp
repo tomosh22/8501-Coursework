@@ -14,7 +14,7 @@ Approach::result Approach2::run(std::vector<int>* input) {
 	return r;
 }
 
-Approach::result Approach2::run_experimental(std::vector<int>* input, const int* xOffset) {
+Approach::result Approach2::run_experimental(std::vector<int>* input, const float* xOffset) {
 	int highorder = -1;
 	int leadCoeff = -1;
 	std::vector<int> set;
@@ -67,7 +67,7 @@ void Approach2::calculate_remaining_coeffs(int* terms, const int* highorder, std
 	}
 }
 
-void Approach2::calculate_remaining_coeffs_experimental(int* terms, const int* highorder, std::vector<int>* set, const int* xOffset) {
+void Approach2::calculate_remaining_coeffs_experimental(int* terms, const int* highorder, std::vector<int>* set, const float* xOffset) {
 	int values[4][4]{};
 	for (int order = *highorder; order > 0; order--) {
 		for (int x = 0; x < order + 1; x++) {

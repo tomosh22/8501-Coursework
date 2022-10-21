@@ -11,6 +11,8 @@
 #include "Approach1.h"
 #include "Approach2.h"
 #include <vector>
+#include <math.h>
+#include <limits>
 
 std::map<int, char> create_char_map() {
 	std::map<int, char> charMap;
@@ -102,20 +104,16 @@ void write_set_to_file(const std::vector<int>* values) {
 
 void create_set() {
 	std::cout << "ax^4 + bx^3 + cx^2 + dx + e\n";
-	int terms[5];
+	int terms[5],lower,upper;
 	std::map<int, char> charMap = create_char_map();
 	get_terms_from_user(terms, &charMap);
-	int lower,upper;
 	std::vector<int> values;
 	get_input_set_from_user(&lower,&upper);
 	generate_set_from_input_set(&values, terms, &lower, &upper);
-	std::cout << '\n';
-	std::cout << "output to file? Y : N\n";
+	std::cout << "\noutput to file? Y : N\n";
 	char choice;
 	std::cin >> choice;
-	if (choice == 'Y' || choice == 'y') {
-		write_set_to_file(&values);
-	}
+	if (choice == 'Y' || choice == 'y') write_set_to_file(&values);
 	return;
 }
 
@@ -143,11 +141,8 @@ void read_sets(std::vector<std::vector<int>>* sets) {
 	std::ifstream file("sets.csv", std::ios::in);
 	std::map<std::string, int*> readSets;
 	std::string line;
-	char chr;
-	char value[9]{};//can only read integers up to 999999999
-	int valueIndex = 0;
-	int setIndex = 0;
-	int mapIndex = 0;
+	char chr, value[9]{};//can only read integers up to 999999999
+	int valueIndex = 0, setIndex = 0, mapIndex = 0;
 	try {
 		if (!file.is_open()) throw std::ifstream::failure("Error reading file");
 		while (file.get(chr)) {
@@ -221,11 +216,31 @@ Approach* get_approach_from_user() {
 void experimental(std::vector<std::vector<int>>* sets) {
 	Approach2 solver = Approach2();
 	std::string f = "5";
-	for (int x = -50; x < 50; x++) {
+	float x = 6;
+	//std::cout << x << std::endl;
+	while (x < 8) {
 		Approach::result r = solver.run_experimental(&sets->at(5), &x);
-		Approach::display_result(&r);
-		std::cout << '\n' << x << '\n';
+		//std::cout << x << '\n';
+		if (std::abs(r.d) < 9 && std::abs(r.e) < 1000) {
+			std::cout << x << '\n';
+			Approach::display_result(&r);
+			std::cout << '\n';
+		}
+		//x = std::nextafterf(x, FLT_MAX);
+
+		x += (float)1 / 4096;
 	}
+	/*for (float x = 6; x < 8; x+= std::numeric_limits<float>::min()) {
+		Approach::result r = solver.run_experimental(&sets->at(5), &x);
+		
+		if( std::abs(r.d) < 9 && std::abs(r.e) < 1000){
+			std::cout << x << '\n';
+			Approach::display_result(&r);
+			std::cout << '\n';
+		}
+		
+		
+	}*/
 }
 
 void cli(std::vector<std::vector<int>>* sets) {
@@ -234,7 +249,7 @@ void cli(std::vector<std::vector<int>>* sets) {
 	std::vector<Approach::result> results;
 	Approach* solver = get_approach_from_user();
 	while (true) {
-		std::cout << "1. create set\n2. read sets\n3. derive formula from set\n";
+		std::cout << "1. create set\n2. read sets\n3. derive formula from set\n4. Set F\n";
 		std::cin >> choice;
 		switch (choice){
 		case '1':
@@ -258,9 +273,17 @@ void cli(std::vector<std::vector<int>>* sets) {
 			write_expressions_to_file(&results);
 			break;
 		case '4':
+			if (sets->size() == 0) {
+				system("CLS");
+				std::cout << "no sets read\nSpace - Enter to continue";
+				while (true) { if (std::cin.get() == ' ') { break; } }
+				system("CLS");
+				break;
+			}
 			experimental(sets);
 			return;
 		default:
+
 			system("CLS");
 			break;
 		}
